@@ -16,40 +16,35 @@
 
 package rep.api.rest
 
-import akka.actor.Actor
-
-import akka.util.Timeout
-import rep.network._
-
-import scala.concurrent.duration._
+import akka.actor.Props
 import akka.pattern.ask
-
-import scala.concurrent._
-import rep.protos.peer._
-import rep.crypto._
-import rep.sc.Shim._
-import rep.network.PeerHelper._
-import rep.storage._
-import spray.json._
-import scalapb.json4s.JsonFormat
-import rep.app.TestMain
+import akka.util.Timeout
+import com.google.protobuf.ByteString
 import org.json4s._
 import org.json4s.jackson.JsonMethods
-import rep.network.tools.PeerExtension
-import rep.network.base.ModuleBase
-import rep.utils.GlobalUtils.ActorType
-import akka.actor.Props
-import rep.crypto.cert.SignTool
-import rep.protos.peer.ActionResult
+import rep.app.TestMain
 import rep.app.conf.SystemProfile
+import rep.crypto._
+import rep.crypto.cert.SignTool
 import rep.log.RepLogger
+import rep.network._
 import rep.network.base.ModuleBase
-import rep.sc.TypeOfSender
-import rep.sc.SandboxDispatcher.DoTransaction
+import rep.protos.peer.{ActionResult, _}
 import rep.sc.Sandbox.DoTransactionResult
+import rep.sc.SandboxDispatcher.DoTransaction
+import rep.sc.TypeOfSender
+import rep.storage._
+import rep.utils.GlobalUtils.ActorType
+import rep.utils.SerializeUtils
+import scalapb.json4s.JsonFormat
+
+import scala.concurrent._
+import scala.concurrent.duration._
+
 /**
  * RestActor伴生object，包含可接受的传入消息定义，以及处理的返回结果定义。
  * 以及用于建立Tranaction，检索Tranaction的静态方法
+ *
  * @author c4w created
  *
  */
@@ -58,27 +53,43 @@ object RestActor {
   def props(name: String): Props = Props(classOf[RestActor], name)
 
   val contractOperationMode = SystemProfile.getContractOperationMode
+
   case object ChainInfo
+
   case object NodeNumber
+
   case object TransNumber
+
   case object AcceptedTransNumber
 
   case class SystemStart(cout: Int)
+
   case class SystemStop(from: Int, to: Int)
 
   case class BlockId(bid: String)
+
   case class BlockHeight(h: Int)
+
   case class BlockTime(createTime: String, createTimeUtc: String)
+
   case class BlockTimeForHeight(h: Long)
+
   case class BlockTimeForTxid(txid: String)
+
   case class BlockHeightStream(h: Int)
+
   case class TransactionId(txid: String)
+
   case class TransactionStreamId(txid: String)
+
   case class TransNumberOfBlock(height: Long)
+
   case object LoadBlockInfo
+
   case object IsLoadBlockInfo
 
   case class PostResult(txid: String, result: Option[ActionResult], err: Option[String])
+
   case class QueryResult(result: Option[JValue])
 
   case class resultMsg(result: String)
@@ -89,12 +100,18 @@ object RestActor {
   case class CSpec(stype: Int, chaincodename: String, chaincodeversion: Int,
                    iptFunc: String, iptArgs: Seq[String], timeout: Int, legal_prose: String,
                    code: String, ctype: Int, state: Boolean)
+
   case class tranSign(tran: String)
+
+  case class TranInfoAndHeightId(txid: String)
+
+  case class TranInfoHeight(tranInfo: JValue, height: Long)
 
   /**
    * 根据节点名称和chainCode定义建立交易实例
+   *
    * @param nodeName 节点名称
-   * @param c chainCode定义
+   * @param c        chainCode定义
    */
   def buildTranaction(nodeName: String, c: CSpec): Transaction = {
     val stype = c.stype match {
@@ -137,8 +154,7 @@ object RestActor {
 class RestActor(moduleName: String) extends ModuleBase(moduleName) {
 
   import RestActor._
-  import spray.json._
-  import akka.http.scaladsl.model.{ HttpResponse, MediaTypes, HttpEntity }
+  import akka.http.scaladsl.model.{HttpEntity, HttpResponse, MediaTypes}
 
   //import rep.utils.JsonFormat.AnyJsonFormat
 
@@ -168,7 +184,8 @@ class RestActor(moduleName: String) extends ModuleBase(moduleName) {
         if (pe.getTransPoolMgr.findTrans(t.id) || sr.isExistTrans4Txid(t.id)) {
           sender ! PostResult(t.id, None, Option(s"transactionId is exists, the transaction is \n ${t.id}"))
         } else {
-          if (SignTool.verify(sig, tOutSig.toByteArray, certId, pe.getSysTag)) {
+          val isTrue = SignTool.verify(sig, tOutSig.toByteArray, certId, pe.getSysTag)
+          if (isTrue) {
             //            RepLogger.info(RepLogger.Business_Logger, s"验证签名成功，txid: ${t.id},creditCode: ${t.signature.get.getCertId.creditCode}, certName: ${t.signature.get.getCertId.certName}")
             val future = pe.getActorRef(ActorType.transactiondispatcher) ? DoTransaction(t, "api_" + t.id, TypeOfSender.FromAPI)
             val result = Await.result(future, timeout.duration).asInstanceOf[DoTransactionResult]
@@ -212,6 +229,15 @@ class RestActor(moduleName: String) extends ModuleBase(moduleName) {
       var txr = Transaction.defaultInstance
       try {
         txr = Transaction.parseFrom(tr1)
+        val creditCode = txr.getSignature.getCertId.creditCode
+        val name = txr.getSignature.getCertId.certName
+        val deployer = creditCode + "." + name
+        val deployers = "1acd7866562e47c7bc.deployer1;4bd7f7af7c5f44e797.deployer2;bd481390b542432b9b.deployer3"
+        if (txr.`type` == Transaction.Type.CHAINCODE_DEPLOY){
+          if (!deployers.contains(deployer)){
+            sender ! PostResult(txr.id, None, Option("该用户无部署合约权限！"))
+          }
+        }
         preTransaction(txr)
       } catch {
         case e: Exception =>
@@ -253,17 +279,6 @@ class RestActor(moduleName: String) extends ModuleBase(moduleName) {
       }
       sender ! r
 
-    // 根据高度检索块
-    case BlockHeight(h) =>
-      val bb = sr.getBlockByHeight(h)
-      val r = bb match {
-        case null => QueryResult(None)
-        case _ =>
-          val bl = Block.parseFrom(bb)
-          QueryResult(Option(JsonFormat.toJson(bl)))
-      }
-      sender ! r
-
     case BlockTimeForHeight(h) =>
       val bb = sr.getBlockTimeOfHeight(h)
       val r = bb match {
@@ -282,13 +297,26 @@ class RestActor(moduleName: String) extends ModuleBase(moduleName) {
       }
       sender ! r
 
+    // 根据高度检索块
+    case BlockHeight(h) =>
+      val bb = sr.getBlockByHeight(h)
+      val r = bb match {
+        case null => QueryResult(None)
+        case _ =>
+          val bl = screenBlock(bb)
+          //val bl = Block.parseFrom(bb)
+          QueryResult(Option(JsonFormat.toJson(bl)))
+      }
+      sender ! r
+
     // 根据高度检索块的子节流
     case BlockHeightStream(h) =>
       val bb = sr.getBlockByHeight(h)
       if (bb == null) {
         sender ! HttpResponse(entity = HttpEntity.Strict(MediaTypes.`application/octet-stream`, akka.util.ByteString.empty))
       } else {
-        val body = akka.util.ByteString(bb)
+        val bl = screenBlock(bb)
+        val body = akka.util.ByteString(bl.toByteArray)
         val entity = HttpEntity.Strict(MediaTypes.`application/octet-stream`, body)
         val httpResponse = HttpResponse(entity = entity)
         sender ! httpResponse
@@ -300,32 +328,53 @@ class RestActor(moduleName: String) extends ModuleBase(moduleName) {
       val r = bb match {
         case null => QueryResult(None)
         case _ =>
-          val bl = Block.parseFrom(bb)
+          val bl = screenBlock(bb)
+          //val bl = Block.parseFrom(bb)
           QueryResult(Option(JsonFormat.toJson(bl)))
       }
       sender ! r
 
     // 根据txid检索交易
     case TransactionId(txId) =>
-      var r = sr.getTransDataByTxId(txId) match {
+      //直接去掉非法交易
+      /*var r = QueryResult(None)
+      if (!checkTxid(txId)) {
+        r = sr.getTransDataByTxId(txId) match {
+          case None =>
+            QueryResult(None)
+          case t: Some[Transaction] =>
+            QueryResult(Option(JsonFormat.toJson(t.get)))
+        }
+      }
+      sender ! r*/
+      val r = sr.getTransDataByTxId(txId) match {
         case None =>
           QueryResult(None)
         case t: Some[Transaction] =>
-          QueryResult(Option(JsonFormat.toJson(t.get)))
+          if (checkTxid(txId)) {
+            val nt = screenTransaction(t.get)
+            QueryResult(Option(JsonFormat.toJson(nt)))
+          } else {
+            QueryResult(Option(JsonFormat.toJson(t.get)))
+          }
       }
       sender ! r
 
     // 根据txid检索交易字节流
     case TransactionStreamId(txId) =>
-      val r = sr.getTransDataByTxId(txId)
-      if (r.isEmpty) {
+      if (checkTxid(txId)) { //屏蔽不允许访问的交易
         sender ! HttpResponse(entity = HttpEntity.Strict(MediaTypes.`application/octet-stream`, akka.util.ByteString.empty))
       } else {
-        val t = r.get
-        val body = akka.util.ByteString(t.toByteArray)
-        val entity = HttpEntity.Strict(MediaTypes.`application/octet-stream`, body)
-        val httpResponse = HttpResponse(entity = entity)
-        sender ! httpResponse
+        val r = sr.getTransDataByTxId(txId)
+        if (r.isEmpty) {
+          sender ! HttpResponse(entity = HttpEntity.Strict(MediaTypes.`application/octet-stream`, akka.util.ByteString.empty))
+        } else {
+          val t = r.get
+          val body = akka.util.ByteString(t.toByteArray)
+          val entity = HttpEntity.Strict(MediaTypes.`application/octet-stream`, body)
+          val httpResponse = HttpResponse(entity = entity)
+          sender ! httpResponse
+        }
       }
 
     // 获取链信息
@@ -362,5 +411,84 @@ class RestActor(moduleName: String) extends ModuleBase(moduleName) {
       val num = sr.isFinish
       val rs = "{\"isfinish\":\"" + num + "\"}"
       sender ! QueryResult(Option(JsonMethods.parse(string2JsonInput(rs))))
+
+    case TranInfoAndHeightId(txId) =>
+      implicit val fomats = DefaultFormats
+      val r = sr.getTransDataByTxId(txId) match {
+        case None =>
+          QueryResult(None)
+        case t: Some[Transaction] =>
+          val txr = t.get
+          val tranInfoHeight = TranInfoHeight(JsonFormat.toJson(txr), sr.getBlockIdxByTxid(txr.id).getBlockHeight())
+          QueryResult(Option(Extraction.decompose(tranInfoHeight)))
+      }
+      sender ! r
+  }
+
+  private def checkTxid(txid: String): Boolean = {
+    val txidSet = getInvalidTxid()
+    txidSet.contains(txid)
+  }
+
+  private def getInvalidTxid(): Set[String] = {
+    val key = GlobalId.ILLEGAL_TRANSACTION_LIST_KEY
+    val v = sr.getInvalidTxid(GlobalId.TransactionReview + key)
+    var txidSet = SerializeUtils.deserialise(v).asInstanceOf[Set[String]]
+    if (txidSet == null) {
+      txidSet = Set.empty
+    }
+    txidSet
+  }
+
+  private def screenBlock(blockBytes: Array[Byte]): Block = {
+    val txidSet = getInvalidTxid()
+    val block = Block.parseFrom(blockBytes)
+    val blockWithoutTrans = block.clearTransactions.clearTransactionResults
+    val transSet: scala.collection.mutable.Set[Transaction] = scala.collection.mutable.Set.empty
+    val transResultSet: scala.collection.mutable.Set[TransactionResult] = scala.collection.mutable.Set.empty
+
+    /** ***************begin 直接去掉整个非法交易*************** */
+    /*for (t: Transaction <- block.transactions) {
+      if (!txidSet.contains(t.id)) {
+        transSet.add(t)
+      }
+    }
+    for (tr: TransactionResult <- block.transactionResults) {
+      if (!txidSet.contains(tr.txId)) {
+        transResultSet.add(tr)
+      }
+    }*/
+    /** ***************end 直接去掉整个非法交易*************** */
+
+    for (t: Transaction <- block.transactions) {
+      if (txidSet.contains(t.id)) {
+        val nt = screenTransaction(t)
+        transSet.add(nt)
+      } else {
+        transSet.add(t)
+      }
+    }
+    for (tr: TransactionResult <- block.transactionResults) {
+      if (txidSet.contains(tr.txId)) {
+        val ntr = screenTransactionResult(tr)
+        transResultSet.add(ntr)
+      } else {
+        transResultSet.add(tr)
+      }
+    }
+    blockWithoutTrans.withTransactions(transSet.toSeq).withTransactionResults(transResultSet.toSeq)
+  }
+
+  private def screenTransaction(t: Transaction): Transaction = {
+    val tWithoutParam = t.clearPara
+    val cipWithoutArgs = t.getIpt.clearArgs
+    val cip = cipWithoutArgs.withArgs(Seq("******************"))
+    tWithoutParam.withIpt(cip)
+  }
+
+  private def screenTransactionResult(tr: TransactionResult): TransactionResult = {
+    val trWithoutOl = tr.clearOl
+    trWithoutOl.withOl(Seq(OperLog("************",
+      ByteString.copyFrom("******", "utf-8"), ByteString.copyFrom("******", "utf-8"))))
   }
 }
