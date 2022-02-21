@@ -158,8 +158,8 @@ class Blocker(moduleName: String) extends ModuleBase(moduleName) {
       null
     }
   }
-  
-  
+
+
   private def CreateBlock4One(start: Int = 0): Block = {
     RepTimeTracer.setStartTime(pe.getSysTag, "Block", System.currentTimeMillis(), pe.getBlocker.VoteHeight + 1, 0)
     RepTimeTracer.setStartTime(pe.getSysTag, "createBlock", System.currentTimeMillis(), pe.getBlocker.VoteHeight + 1, 0)
@@ -198,7 +198,7 @@ class Blocker(moduleName: String) extends ModuleBase(moduleName) {
     }else{
       blc = CreateBlock(0)
     }
-     
+
     if (blc != null) {
       RepTimeTracer.setEndTime(pe.getSysTag, "createBlock", System.currentTimeMillis(), blc.height, blc.transactions.size)
       this.preblock = blc
@@ -230,16 +230,16 @@ class Blocker(moduleName: String) extends ModuleBase(moduleName) {
         if(SystemProfile.getNumberOfEndorsement == 1){
           if (NodeHelp.isBlocker(pe.getBlocker.blocker, pe.getSysTag)){
             sendEvent(EventType.PUBLISH_INFO, mediator, pe.getSysTag, Topic.Block, Event.Action.CANDIDATOR)
-             if (preblock == null || (preblock.previousBlockHash.toStringUtf8() != pe.getCurrentBlockHash)) {
+            if (preblock == null || (preblock.previousBlockHash.toStringUtf8() != pe.getCurrentBlockHash)) {
               //是出块节点
               CreateBlockHandler
-             }
+            }
           }
-          
+
         }else{
           if (NodeHelp.isBlocker(pe.getBlocker.blocker, pe.getSysTag) && pe.getBlocker.voteBlockHash == pe.getCurrentBlockHash) {
             sendEvent(EventType.PUBLISH_INFO, mediator, pe.getSysTag, Topic.Block, Event.Action.CANDIDATOR)
-  
+
             //是出块节点
             if (preblock == null || (preblock.previousBlockHash.toStringUtf8() != pe.getBlocker.voteBlockHash)) {
               CreateBlockHandler

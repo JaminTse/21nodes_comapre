@@ -16,172 +16,79 @@
 
 package rep.sc.tpl
 
-import rep.protos.peer._
+import org.json4s._
 import org.json4s.jackson.JsonMethods._
-
-import scala.collection.mutable.Map
-import org.json4s.DefaultFormats
 import rep.app.conf.SystemProfile
-import rep.utils.{ IdTool, SerializeUtils }
-import rep.sc.scalax.{ ContractContext, ContractException, IContract }
+import rep.protos.peer.ChaincodeId
+import rep.utils.IdTool
+import java.text.SimpleDateFormat
+
+import rep.sc.scalax.{ContractContext, ContractException, IContract}
 import rep.protos.peer.ActionResult
 
 /**
- * @author zyf
+ * 资产管理合约
  */
-final case class CertStatus(credit_code: String, name: String, status: Boolean)
-final case class CertInfo(credit_code: String, name: String, cert: Certificate)
-class ContractCert extends IContract {
-  //case class CertStatus(credit_code: String, name: String, status: Boolean)
-  //case class CertInfo(credit_code: String, name: String, cert: Certificate)
-  
-  implicit val formats = DefaultFormats
 
-  val notNodeCert = "非管理员操作"
-  val signerExists = "账户已存在"
-  val signerNotExists = "账户不存在"
-  val certExists = "证书已存在"
-  val certNotExists = "证书不存在"
-  val unknownError = "未知错误"
+
+class ContractAssetsTPL2 extends IContract{
+  case class Transfer(from:String, to:String, amount:Int)
+
+  // 需要跨合约读账户
   val chaincodeName = SystemProfile.getAccountChaincodeName
   val chaincodeVersion = SystemProfile.getAccountChaincodeVersion
   //val prefix = IdTool.getCid(ChaincodeId(chaincodeName, chaincodeVersion))
-  val underline = "_"
-  val dot = "."
-  // 锚点，错误回退
-  var anchor: Map[String, Any] = Map()
 
-  object ACTION {
-    val SignUpSigner = "SignUpSigner"
-    val SignUpCert = "SignUpCert"
-    val UpdateCertStatus = "UpdateCertStatus"
-    val UpdateSigner = "UpdateSigner"
-  }
+  implicit val formats = DefaultFormats
 
-  /**
-   * 注册Signer账户
-   * @param ctx
-   * @param data
-   * @return
-   */
-  def signUpSigner(ctx: ContractContext, data: Signer): ActionResult = {
-    val isNodeCert = ctx.api.bNodeCreditCode(ctx.t.getSignature.getCertId.creditCode)
-    if (!isNodeCert) {
-      throw ContractException(notNodeCert)
-    }
-    // 存Signer账户
-    //val signerKey = prefix + underline + data.creditCode
-    val signer = ctx.api.getState(data.creditCode)
-    // 如果是null，表示已注销，如果不是null，则判断是否有值
-    if (signer == null) {
-      ctx.api.setVal(data.creditCode, data)
-      null
-    } else {
-      throw ContractException(signerExists)
-    }
-  }
-
-  /**
-   * 注册用户证书：1、将name加到账户中；2、将Certificate保存
-   * @param ctx
-   * @param data
-   * @return
-   */
-  def signUpCert(ctx: ContractContext, data: CertInfo): ActionResult = {
-    val isNodeCert = ctx.api.bNodeCreditCode(ctx.t.getSignature.getCertId.creditCode)
-    if (!isNodeCert) {
-      throw ContractException(notNodeCert)
-    }
-    val certKey = data.credit_code + dot + data.name
-    val certInfo = ctx.api.getState(certKey)
-    val signerKey = data.credit_code
-    val signerContent = ctx.api.getState(signerKey)
-    // 先判断证书，若证书不存在，则向账户添加name
-    if (certInfo == null) {
-      if (signerContent == null) {
-        throw ContractException(signerNotExists)
-      } else {
-        ctx.api.setVal(certKey, data.cert)
-        val signer = SerializeUtils.deserialise(signerContent).asInstanceOf[Signer]
-        if (!signer.certNames.contains(data.name)) {
-          val signerNew = signer.addCertNames(data.name)
-          ctx.api.setVal(signerKey, signerNew)
-        }
-      }
-      null
-    } else {
-      throw ContractException(certExists)
-    }
-  }
-
-  /**
-   * 用户证书禁用、启用
-   * @param ctx
-   * @param data
-   * @return
-   */
-  def updateCertStatus(ctx: ContractContext, data: CertStatus): ActionResult = {
-    val isNodeCert = ctx.api.bNodeCreditCode(ctx.t.getSignature.getCertId.creditCode)
-    if (!isNodeCert) {
-      throw ContractException(notNodeCert)
-    }
-    val certKey = data.credit_code + dot + data.name
-    val certInfo = ctx.api.getState(certKey)
-    if (certInfo == null) {
-      throw ContractException(certNotExists)
-    } else {
-      val cert = SerializeUtils.deserialise(certInfo).asInstanceOf[Certificate]
-      val certNew = cert.withCertValid(data.status)
-      ctx.api.setVal(certKey, certNew)
-      null
-    }
-  }
-
-  /**
-   * 更新账户相关信息
-   * @param ctx
-   * @param data
-   * @return
-   */
-  def updateSigner(ctx: ContractContext, data: Signer): ActionResult = {
-    val isNodeCert = ctx.api.bNodeCreditCode(ctx.t.getSignature.getCertId.creditCode)
-    if (!isNodeCert) {
-      throw ContractException(notNodeCert)
-    }
-    val signer = ctx.api.getState(data.creditCode)
-    // 如果是null，账户不存在，不存在则不能更新
-    if (signer == null) {
-      throw ContractException(signerNotExists)
-    } else {
-      ctx.api.setVal(data.creditCode, data)
-      null
-    }
-  }
-
-  
-  override def init(ctx: ContractContext) {
+  def init(ctx: ContractContext){
     println(s"tid: $ctx.t.id")
   }
 
-  /**
-   * 合约方法入口
-   */
-  override def onAction(ctx: ContractContext, action: String, sdata: String): ActionResult = {
-    val json = parse(sdata)
+  def set(ctx: ContractContext, data:Map[String,Int]) :ActionResult={
+    println(s"set data:$data")
+    for((k,v)<-data){
+      ctx.api.setVal(k, v)
+    }
+    null
+  }
 
+  def transfer(ctx: ContractContext, data:Transfer) :ActionResult={
+    if(!data.from.equals(ctx.t.getSignature.getCertId.creditCode))
+      throw ContractException("只允许从本人账户转出")
+    val signerKey =  data.to
+    // 跨合约读账户，该处并未反序列化
+    if(ctx.api.getStateEx(chaincodeName,data.to)==null)
+      throw ContractException("目标账户不存在")
+    val sfrom:Any =  ctx.api.getVal(data.from)
+    var dfrom =sfrom.asInstanceOf[Int]
+    if(dfrom < data.amount)
+      throw ContractException("余额不足")
+    var dto = ctx.api.getVal(data.to).toString.toInt
+
+    val df:SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    val t1 = System.currentTimeMillis()
+    val s1 = s"setval begin:${ctx.t.id} " + df.format(t1)
+
+    ctx.api.setVal(data.from,dfrom - data.amount)
+    //for test 同合约交易串行测试
+    Thread.sleep(5000)
+    ctx.api.setVal(data.to,dto + data.amount)
+    val t2 = System.currentTimeMillis()
+    val s2 = s"setval end:${ctx.t.id} " + df.format(t2)
+    print("\n"+s1+"\n"+s2)
+    null
+  }
+  /**
+   * 根据action,找到对应的method，并将传入的json字符串parse为method需要的传入参数
+   */
+  def onAction(ctx: ContractContext,action:String, sdata:String ):ActionResult={
+    val json = parse(sdata)
     action match {
-      case ACTION.SignUpSigner =>
-        println("SignUpSigner")
-        signUpSigner(ctx, json.extract[Signer])
-      case ACTION.SignUpCert =>
-        println("SignUpCert")
-        signUpCert(ctx, json.extract[CertInfo])
-      case ACTION.UpdateCertStatus =>
-        println("UpdateCertStatus")
-        updateCertStatus(ctx, json.extract[CertStatus])
-      case ACTION.UpdateSigner =>
-        println("UpdateSigner")
-        updateSigner(ctx, json.extract[Signer])
+      case "transfer" =>
+        transfer(ctx,json.extract[ Transfer])
+      case "set" =>
+        set(ctx, json.extract[Map[String,Int]])
     }
   }
 

@@ -19,9 +19,9 @@ package rep.utils
 import rep.log.RepLogger
 
 /**
-  * 时间相关工具
-  * Created by shidianyue on 2017/5/17.
-  */
+ * 时间相关工具
+ * Created by shidianyue on 2017/5/17.
+ */
 object TimeUtils {
 
   def getCurrentTime():Long ={

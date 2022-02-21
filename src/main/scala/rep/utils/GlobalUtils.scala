@@ -19,11 +19,11 @@ package rep.utils
 
 import rep.protos.peer.{Transaction}
 /**
-  * 全局变量
-  * Created by shidianyue on 2017/5/22.
-  * 
-  * @update 2018-05 jiangbuyun
-  */
+ * 全局变量
+ * Created by shidianyue on 2017/5/22.
+ *
+ * @update 2018-05 jiangbuyun
+ */
 object GlobalUtils {
   //case class TranscationPoolPackage(t:Transaction,createTime:Long)
   case class BlockerInfo(blocker:String,VoteIndex:Int,voteTime:Long,voteBlockHash:String,VoteHeight:Long)
@@ -34,7 +34,7 @@ object GlobalUtils {
     val Ready = 4
     val Nothing  = 5
   }
-  
+
   case object BlockEvent{
     //同步信息广播
     val CHAIN_INFO_SYNC = "Sync"
@@ -84,8 +84,8 @@ object GlobalUtils {
     val dispatchofRecvendorsement = 20
     val dispatchofpreload = 21
   }
-  
-  
+
+
 
   case object EventType{
     val PUBLISH_INFO = 1

@@ -35,19 +35,25 @@ object certCache {
 
   def getCertByPem(pemcert: String): java.security.cert.Certificate = {
     val cf = java.security.cert.CertificateFactory.getInstance("X.509")
-//    val cert = cf.generateCertificate(
-//      new ByteArrayInputStream(
-//        Base64.Decoder(
-//          pemcert.replaceAll("\r\n", "")
-//            .replaceAll("\n","")
-//            .stripPrefix("-----BEGIN CERTIFICATE-----")
-//            .stripSuffix("-----END CERTIFICATE-----")).toByteArray
-//      )
-//    )
-    val pemReader = new PemReader(new StringReader(pemcert))
-    val certByte = pemReader.readPemObject().getContent
-    val cert = cf.generateCertificate(new ByteArrayInputStream(certByte))
-    cert
+    //    val cert = cf.generateCertificate(
+    //      new ByteArrayInputStream(
+    //        Base64.Decoder(
+    //          pemcert.replaceAll("\r\n", "")
+    //            .replaceAll("\n","")
+    //            .stripPrefix("-----BEGIN CERTIFICATE-----")
+    //            .stripSuffix("-----END CERTIFICATE-----")).toByteArray
+    //      )
+    //    )
+    try {
+      val pemReader = new PemReader(new StringReader(pemcert))
+      val certByte = pemReader.readPemObject().getContent
+      val cert = cf.generateCertificate(new ByteArrayInputStream(certByte))
+      cert
+    }catch {
+      case exception: Exception =>
+        exception.printStackTrace()
+        null
+    }
   }
 
   def getCertForUser(certKey: String, sysTag: String): java.security.cert.Certificate = {
@@ -68,7 +74,8 @@ object certCache {
           if (kvcert != null ) {
             if(kvcert.certValid){
               //从worldstate中获取证书，如果证书以及证书是有效时，返回证书信息
-              rcert = getCertByPem(kvcert.certificate)
+              val pem = kvcert.certificate
+              rcert = getCertByPem(pem)
             }
             caches += certKey -> (kvcert.certValid, rcert)
           }

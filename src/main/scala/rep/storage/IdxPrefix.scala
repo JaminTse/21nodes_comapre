@@ -23,15 +23,14 @@ package rep.storage
  * @since	2017-09-28
  * */
 object IdxPrefix {
-     val  Height:String   = "rechain_height"
-	   val  MaxFileNo:String  = "rechain_file_no"
-	   val  FirstHeightOfFilePrefix = "repchain_file_"
-	   val  FirstHeightOfFileSuffix = "_first_height"
-	   val  TotalAllTxNumber:String = "rechain_total_all_tx_number"
-	    //每次存储时都需要修改这个内容
-	   val  IdxBlockPrefix:String = "b_b_"//存储内容为blockindex完整值
-	   val  IdxBlockHeight:String = "b_h_"//存储内容为block对应的hash值
-	   val  IdxTransaction:String = "tx_"//存储内容为对应的block的hash值
-	   val  WorldStateKeyPreFix:String = "c_"//存储内容为每个链码的worldstate
-	   
+	val  Height:String   = "rechain_height"
+	val  MaxFileNo:String  = "rechain_file_no"
+	val  FirstHeightOfFilePrefix = "repchain_file_"
+	val  FirstHeightOfFileSuffix = "_first_height"
+	val  TotalAllTxNumber:String = "rechain_total_all_tx_number"
+	//每次存储时都需要修改这个内容
+	val  IdxBlockPrefix:String = "b_b_"//存储内容为blockindex完整值
+	val  IdxBlockHeight:String = "b_h_"//存储内容为block对应的hash值
+	val  IdxTransaction:String = "tx_"//存储内容为对应的block的hash值
+	val  WorldStateKeyPreFix:String = "c_"//存储内容为每个链码的worldstate
 }

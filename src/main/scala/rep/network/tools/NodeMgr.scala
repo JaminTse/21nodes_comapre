@@ -34,17 +34,17 @@ class NodeMgr {
   //本地缓存稳定的网络节点
   //private var stableNodes: TreeMap[Address, String] = new TreeMap[Address, String]()
   private implicit var stableNodes = new ConcurrentHashMap[Address, String] asScala
-  
+
   //本地上次候选人名单
   //private var candidator: TreeMap[String, String] = new TreeMap[String, String]()
   //private var candidator: Set[String] = Set.empty[String]
 
   def getNodes: Set[Address] = {
-     nodes.values.toArray.toSet
+    nodes.values.toArray.toSet
   }
 
   def putNode(addr: Address): Unit = {
-      nodes.put(addr.toString, addr)
+    nodes.put(addr.toString, addr)
   }
 
   def removeNode(addr: Address): Unit = {
@@ -65,9 +65,9 @@ class NodeMgr {
   }
 
   def getStableNodeName4Addr(addr:Address):String={
-      stableNodes.get(addr).get
+    stableNodes.get(addr).get
   }
-  
+
   def putStableNode(addr: Address, nodeName: String): Unit = {
     stableNodes.put(addr, nodeName)
   }
@@ -88,24 +88,24 @@ class NodeMgr {
   def getNodeAddr4NodeName(nodeName: String): Address = {
     var a: Address = null
     breakable(
-        stableNodes.foreach(f => {
-          if (f._2 == nodeName) {
-            a = f._1
-            break
-          }
-        }))
+      stableNodes.foreach(f => {
+        if (f._2 == nodeName) {
+          a = f._1
+          break
+        }
+      }))
     a
   }
-  
+
   def getNodeName4AddrString(addrstr: String): String = {
     var a: String = ""
     breakable(
-        stableNodes.foreach(f => {
-          if (f._1.toString == addrstr) {
-            a = f._2
-            break
-          }
-        }))
+      stableNodes.foreach(f => {
+        if (f._1.toString == addrstr) {
+          a = f._2
+          break
+        }
+      }))
     a
   }
 

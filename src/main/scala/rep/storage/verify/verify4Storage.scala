@@ -26,7 +26,7 @@ import scala.util.Random
 import scala.util.control.Breaks._
 
 object verify4Storage {
-  
+
   private def getFileInfo(sr: ImpDataAccess,blockHeight:Long):Set[(Int,Long,Long)] = {
     val fno = sr.getMaxFileNo()
     val fls = new Array[(Int,Long,Long)](fno+1)
@@ -42,22 +42,22 @@ object verify4Storage {
     }
     fls.toSet
   }
-  
+
   private def verfiyFileForFileInfo(firstHeigh:Long,lastHeight:Long,sr: ImpDataAccess):Boolean={
-     var r = true
-     val seed = lastHeight-firstHeigh
-     breakable(
-     for(i<-0 to 9){
-       val rseed = Random.nextLong()
-       var h = Math.abs(rseed) % seed + firstHeigh
-       if(!verfiyBlockOfFile(h,sr)){
-         r = false
-         break
-       }
-     })
-     r
+    var r = true
+    val seed = lastHeight-firstHeigh
+    breakable(
+      for(i<-0 to 9){
+        val rseed = Random.nextLong()
+        var h = Math.abs(rseed) % seed + firstHeigh
+        if(!verfiyBlockOfFile(h,sr)){
+          r = false
+          break
+        }
+      })
+    r
   }
-  
+
   private def verfiyBlockOfFile(height:Long,sr: ImpDataAccess):Boolean={
     var r = false
     var start:Block = null
@@ -80,7 +80,7 @@ object verify4Storage {
     }
     r
   }
-  
+
   private def VerfiyBlock(block:Block,sysName:String):Boolean={
     var vr = false
     val r = BlockVerify.VerifyAllEndorseOfBlock(block, sysName)
@@ -92,7 +92,7 @@ object verify4Storage {
     }
     vr
   }
-  
+
   def verify(sysName:String):Boolean={
     var b = true
     RepLogger.info(RepLogger.System_Logger,   "系统开始自检区块文件")
@@ -107,17 +107,17 @@ object verify4Storage {
         if(bcinfo.height > 1){
           val flist = getFileInfo(sr,bcinfo.height)
           breakable(
-          flist.foreach(f=>{
-            if(!verfiyFileForFileInfo(f._2,f._3,sr)){
-              errorInfo = "系统自检错误：存储检查失败，LevelDB或者Block文件损坏，请与管理员联系!"
-              b = false
-              break
-            }
-          })
+            flist.foreach(f=>{
+              if(!verfiyFileForFileInfo(f._2,f._3,sr)){
+                errorInfo = "系统自检错误：存储检查失败，LevelDB或者Block文件损坏，请与管理员联系!"
+                b = false
+                break
+              }
+            })
           )
         }else if(bcinfo.height == 1 && !VerfiyBlock(sr.getBlock4ObjectByHeight(1),sysName)){
-            errorInfo = "系统自检错误：存储检查失败，LevelDB或者Block文件损坏，请与管理员联系!"
-            b = false
+          errorInfo = "系统自检错误：存储检查失败，LevelDB或者Block文件损坏，请与管理员联系!"
+          b = false
         }
       }else{
         errorInfo = "无法获取链信息，LevelDB可能损坏。"
@@ -134,8 +134,8 @@ object verify4Storage {
     }else{
       RepLogger.info(RepLogger.System_Logger,  s"系统自检区块文件完成,出现错误，错误信息=${errorInfo}")
     }
-    
+
     b
   }
-  
+
 }

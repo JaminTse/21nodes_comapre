@@ -19,11 +19,11 @@ package rep.app.conf
 import com.typesafe.config.Config
 
 /**
-  * 时间策略相关的配置信息类
-  * @author shidianyue
-  * @version	0.7
-  * @update 2018-05 jiangbuyun
-  * */
+ * 时间策略相关的配置信息类
+ * @author shidianyue
+ * @version	0.7
+ * @update 2018-05 jiangbuyun
+ * */
 
 object TimePolicy {
 
@@ -40,13 +40,13 @@ object TimePolicy {
   def getVoteWaitingDelay = VOTE_WAITING_DELAY
 
   def VOTE_WAITING_DELAY: Long = _VOTE_WAITING_DELAY
-  
+
   def TRANSCATION_WAITING : Int = _TRANSCATION_WAITING
 
   def VOTE_WAITING_DELAY_=(value: Long): Unit = {
     _VOTE_WAITING_DELAY = value
   }
-  
+
   def TRANSCATION_WAITING_=(value: Int): Unit = {
     _TRANSCATION_WAITING = value
   }
@@ -90,7 +90,7 @@ object TimePolicy {
   }
 
   def getVoteRetryDelay = VOTE_RETYR_DELAY
-  
+
   def getTranscationWaiting = TRANSCATION_WAITING
 
   private def SYS_NODE_STABLE_DELAY: Long = _SYS_NODE_STABLE_DELAY
@@ -110,9 +110,9 @@ object TimePolicy {
   def getStableTimeDur = STABLE_TIME_DUR
 
   /**
-    * 初始化时间相关策略
-    * @param config
-    */
+   * 初始化时间相关策略
+   * @param config
+   */
   def initTimePolicy(config: Config): Unit = {
     VOTE_RETYR_DELAY = config.getLong("system.time.block.vote_retry_delay")
     VOTE_WAITING_DELAY = config.getLong("system.time.block.waiting_delay")
@@ -120,31 +120,31 @@ object TimePolicy {
     STABLE_TIME_DUR = config.getInt("system.time.stable_time_dur")
     //val policyType = config.getInt("system.time.timeout_policy_type")
     TRANSCATION_WAITING = config.getInt("system.time.timeout.transcation_waiting")
-    
-    
+
+
     //policyType match {
     //  case PolicyType.MANUAL =>
-        TIMEOUT_BLOCK = config.getInt("system.time.timeout.block")
-        TIMEOUT_ENDORSE = config.getInt("system.time.timeout.endorse")
-        TIMEOUT_PRELOAD_TRANS = config.getInt("system.time.timeout.transaction_preload")
-        TIMEOUT_SYNC_CHAIN = config.getInt("system.time.timeout.sync_chain")
-     /* case PolicyType.AUTO =>
-        //这里我们根据经验设定算法，通过基准时间（一个出块时间），来配置其他的超时时间
-        //类似于默认
-        val basePre = config.getInt("system.time.timeout.base_preload")
-        val baseSync = config.getInt("system.time.timeout.base_sync")
-        val baseAdd = config.getInt("system.time.timeout.base_addition")
-        TIMEOUT_PRELOAD_TRANS = basePre
-        TIMEOUT_ENDORSE = basePre*2
-        TIMEOUT_BLOCK = (3 * basePre + baseAdd)
-        TIMEOUT_SYNC_CHAIN = baseSync
-    }*/
+    TIMEOUT_BLOCK = config.getInt("system.time.timeout.block")
+    TIMEOUT_ENDORSE = config.getInt("system.time.timeout.endorse")
+    TIMEOUT_PRELOAD_TRANS = config.getInt("system.time.timeout.transaction_preload")
+    TIMEOUT_SYNC_CHAIN = config.getInt("system.time.timeout.sync_chain")
+    /* case PolicyType.AUTO =>
+       //这里我们根据经验设定算法，通过基准时间（一个出块时间），来配置其他的超时时间
+       //类似于默认
+       val basePre = config.getInt("system.time.timeout.base_preload")
+       val baseSync = config.getInt("system.time.timeout.base_sync")
+       val baseAdd = config.getInt("system.time.timeout.base_addition")
+       TIMEOUT_PRELOAD_TRANS = basePre
+       TIMEOUT_ENDORSE = basePre*2
+       TIMEOUT_BLOCK = (3 * basePre + baseAdd)
+       TIMEOUT_SYNC_CHAIN = baseSync
+   }*/
   }
 }
 
 /**
-  * 时间策略类型
-  */
+ * 时间策略类型
+ */
 case object PolicyType {
   val MANUAL = 1//手动调整
   val AUTO = 0//自动配置（推荐）

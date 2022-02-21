@@ -92,15 +92,15 @@ class TransactionPool(moduleName: String) extends ModuleBase(moduleName) {
   def checkTransaction(t: Transaction, dataAccess: ImpDataAccess): CheckedTransactionResult = {
     var resultMsg = ""
     var result = false
-    
+
     if(SystemProfile.getHasPreloadTransOfApi){
       val sig = t.getSignature
       val tOutSig = t.clearSignature //t.withSignature(null)
       val cert = sig.getCertId
-  
+
       try {
         val siginfo = sig.signature.toByteArray()
-  
+
         if (SignTool.verify(siginfo, tOutSig.toByteArray, cert, pe.getSysTag)) {
           if (pe.getTransPoolMgr.findTrans(t.id) || dataAccess.isExistTrans4Txid(t.id)) {
             resultMsg = s"The transaction(${t.id}) is duplicated with txid"
@@ -122,13 +122,13 @@ class TransactionPool(moduleName: String) extends ModuleBase(moduleName) {
 
   private def addTransToCache(t: Transaction) = {
     val checkedTransactionResult = checkTransaction(t, dataaccess)
-      //签名验证成功
-      if((checkedTransactionResult.result) && (SystemProfile.getMaxCacheTransNum == 0 || pe.getTransPoolMgr.getTransLength() < SystemProfile.getMaxCacheTransNum) ){
-        pe.getTransPoolMgr.putTran(t, pe.getSysTag)
-        //广播接收交易事件
-        if (pe.getTransPoolMgr.getTransLength() >= SystemProfile.getMinBlockTransNum)
-          pe.getActorRef(GlobalUtils.ActorType.voter) ! VoteOfBlocker
-      }
+    //签名验证成功
+    if((checkedTransactionResult.result) && (SystemProfile.getMaxCacheTransNum == 0 || pe.getTransPoolMgr.getTransLength() < SystemProfile.getMaxCacheTransNum) ){
+      pe.getTransPoolMgr.putTran(t, pe.getSysTag)
+      //广播接收交易事件
+      if (pe.getTransPoolMgr.getTransLength() >= SystemProfile.getMinBlockTransNum)
+        pe.getActorRef(GlobalUtils.ActorType.voter) ! VoteOfBlocker
+    }
   }
 
   private def publishTrans(t: Transaction) = {
@@ -149,7 +149,7 @@ class TransactionPool(moduleName: String) extends ModuleBase(moduleName) {
     case t: Transaction =>
       //保存交易到本地
       sendEvent(EventType.RECEIVE_INFO, mediator, pe.getSysTag, Topic.Transaction, Event.Action.TRANSACTION)
-      addTransToCache(t) 
+      addTransToCache(t)
 
       //广播交易到其他共识节点
       if (ActorUtils.isHelper(sender().path.toString) ||  ActorUtils.isAPI(sender().path.toString)) {
@@ -157,7 +157,7 @@ class TransactionPool(moduleName: String) extends ModuleBase(moduleName) {
         publishTrans(t)
         //广播发送交易事件
         sendEvent(EventType.PUBLISH_INFO, mediator, pe.getSysTag, Topic.Transaction, Event.Action.TRANSACTION)
-      } 
+      }
     case _ => //ignore
   }
 }

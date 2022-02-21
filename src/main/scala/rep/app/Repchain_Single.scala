@@ -21,12 +21,12 @@ import rep.app.system.ClusterSystem
 import rep.app.system.ClusterSystem.InitType
 
 /**
-  * Repchain app start
-  * Created by User on 2017/9/24.
-  */
+ * Repchain app start
+ * Created by User on 2017/9/24.
+ */
 object Repchain_Single {
   def main(args: Array[ String ]): Unit = {
-    var systemTag = "1"
+    var systemTag = "121000005l35120456.node1"
     if(args!=null && args.length>0) systemTag = args(0)
     val sys1 = new ClusterSystem(systemTag, InitType.SINGLE_INIT,true)
     sys1.init

@@ -70,12 +70,12 @@ class DispatchOfPreload(moduleName: String) extends ModuleBase(moduleName) {
     }
   }
 
-  
+
 
   override def receive = {
     case PreTransBlock(block,prefixOfDbTag) =>
       createRouter
-      router.route(PreTransBlock(block,prefixOfDbTag) , sender)  
+      router.route(PreTransBlock(block,prefixOfDbTag) , sender)
     case _ => //ignore
   }
 }

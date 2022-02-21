@@ -75,7 +75,7 @@ class GenesisBlocker(moduleName: String) extends ModuleBase(moduleName) {
     SubscribeTopic(mediator, self, selfAddr, Topic.Block, true)
   }
 
-  
+
 
   private def ExecuteTransactionOfBlock(block: Block): Block = {
     try {
@@ -108,9 +108,9 @@ class GenesisBlocker(moduleName: String) extends ModuleBase(moduleName) {
             //sendEvent(EventType.RECEIVE_INFO, mediator, selfAddr, Topic.Block, Event.Action.BLOCK_NEW)
             mediator ! Publish(Topic.Block, ConfirmedBlock(preblock, self))
             //getActorRef(pe.getSysTag, ActorType.PERSISTENCE_MODULE) ! BlockRestore(blc, SourceOfBlock.CONFIRMED_BLOCK, self)
-          } 
+          }
         }
-        
+
       }
 
     case _ => //ignore

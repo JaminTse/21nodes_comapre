@@ -23,17 +23,17 @@ import scala.math._
 import rep.log.RepLogger
 
 /**
-  * 系统默认
-  * 候选人竞争实现
-  * 出块人竞争实现
-  * Created by shidianyue on 2017/5/15.
-  * 
-  * @update 2018-05 jiangbuyun
-  */
+ * 系统默认
+ * 候选人竞争实现
+ * 出块人竞争实现
+ * Created by shidianyue on 2017/5/15.
+ *
+ * @update 2018-05 jiangbuyun
+ */
 //TODO kami 应该在init的时候载入一个实现函数或者类。然后调用方法。写的更通用一些
 trait CRFDVoter extends VoterBase {
   case class randomNumber(var number:Long,var generateSerial:Int)
-  
+
   override def blocker(nodes: Array[String], position:Int): String = {
     if(nodes.nonEmpty){
       var pos = position
@@ -45,7 +45,7 @@ trait CRFDVoter extends VoterBase {
       null
     }
   }
-  
+
   private def getRandomList(seed:Long,candidatorTotal:Int):Array[randomNumber]={
     val m = pow(2,20).toLong
     val a = 2045
@@ -60,13 +60,13 @@ trait CRFDVoter extends VoterBase {
       var randomobj = new randomNumber(hashSeed,i)
       randomArray(i) = randomobj
     }
-    
+
     randomArray = randomArray.sortWith(
-        (randomNumber_left,randomNumber_right)=> randomNumber_left.number < randomNumber_right.number)
-        
+      (randomNumber_left,randomNumber_right)=> randomNumber_left.number < randomNumber_right.number)
+
     randomArray
   }
-  
+
   override def candidators(Systemname:String,hash:String,nodes: Set[String], seed: Array[Byte]): Array[String] = {
     var nodesSeq = nodes.toSeq.sortBy(f=>(f))
     var len = nodes.size / 2 + 1
@@ -91,10 +91,10 @@ trait CRFDVoter extends VoterBase {
       }
       RepLogger.debug(RepLogger.Vote_Logger, s"sysname=${Systemname},hash=${hash},hashvalue=${hashSeed},randomList=${randomList.mkString("|")}")
       RepLogger.debug(RepLogger.Vote_Logger, s"sysname=${Systemname},candidates=${candidate.mkString("|")}")
-      
+
       candidate
     }
   }
-  
+
 
 }

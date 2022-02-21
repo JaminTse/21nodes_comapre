@@ -49,21 +49,21 @@ class SynchronizeResponser(moduleName: String) extends ModuleBase(moduleName) {
       if (NodeHelp.isSameNodeForRef(sender(), self)) {
         RepLogger.trace(RepLogger.BlockSyncher_Logger, this.getLogMsgPrefix(  "recv sync chaininfo request,it is self,do not response, from actorAddr" + "～" + NodeHelp.getNodePath(sender())))
       } //else {
-        RepLogger.trace(RepLogger.BlockSyncher_Logger, this.getLogMsgPrefix( "recv sync chaininfo request from actorAddr" + "～" + NodeHelp.getNodePath(sender())))
-        val responseInfo = dataaccess.getBlockChainInfo()
-        var ChainInfoOfSpecifiedHeight : BlockchainInfo = BlockchainInfo(0l, 0l, _root_.com.google.protobuf.ByteString.EMPTY,
-                                                                        _root_.com.google.protobuf.ByteString.EMPTY,
-                                                                        _root_.com.google.protobuf.ByteString.EMPTY)
-        if(height >0 && height < responseInfo.height){
-          val b = dataaccess.getBlock4ObjectByHeight(height)
-          RepLogger.trace(RepLogger.BlockSyncher_Logger, this.getLogMsgPrefix(  s"node number:${pe.getSysTag},recv synch chaininfo request,request height:${height},local chaininof=${responseInfo.height}"))
-          ChainInfoOfSpecifiedHeight = ChainInfoOfSpecifiedHeight.withHeight(height)
-          ChainInfoOfSpecifiedHeight = ChainInfoOfSpecifiedHeight.withCurrentBlockHash(b.hashOfBlock)
-          ChainInfoOfSpecifiedHeight = ChainInfoOfSpecifiedHeight.withPreviousBlockHash(b.previousBlockHash)
-          ChainInfoOfSpecifiedHeight = ChainInfoOfSpecifiedHeight.withCurrentStateHash(b.stateHash)
-        }
-        sender ! ResponseInfo(responseInfo,self,ChainInfoOfSpecifiedHeight,pe.getSysTag)
-      //}
+      RepLogger.trace(RepLogger.BlockSyncher_Logger, this.getLogMsgPrefix( "recv sync chaininfo request from actorAddr" + "～" + NodeHelp.getNodePath(sender())))
+      val responseInfo = dataaccess.getBlockChainInfo()
+      var ChainInfoOfSpecifiedHeight : BlockchainInfo = BlockchainInfo(0l, 0l, _root_.com.google.protobuf.ByteString.EMPTY,
+        _root_.com.google.protobuf.ByteString.EMPTY,
+        _root_.com.google.protobuf.ByteString.EMPTY)
+      if(height >0 && height < responseInfo.height){
+        val b = dataaccess.getBlock4ObjectByHeight(height)
+        RepLogger.trace(RepLogger.BlockSyncher_Logger, this.getLogMsgPrefix(  s"node number:${pe.getSysTag},recv synch chaininfo request,request height:${height},local chaininof=${responseInfo.height}"))
+        ChainInfoOfSpecifiedHeight = ChainInfoOfSpecifiedHeight.withHeight(height)
+        ChainInfoOfSpecifiedHeight = ChainInfoOfSpecifiedHeight.withCurrentBlockHash(b.hashOfBlock)
+        ChainInfoOfSpecifiedHeight = ChainInfoOfSpecifiedHeight.withPreviousBlockHash(b.previousBlockHash)
+        ChainInfoOfSpecifiedHeight = ChainInfoOfSpecifiedHeight.withCurrentStateHash(b.stateHash)
+      }
+      sender ! ResponseInfo(responseInfo,self,ChainInfoOfSpecifiedHeight,pe.getSysTag)
+    //}
 
     case BlockDataOfRequest(startHeight) =>
       RepLogger.trace(RepLogger.BlockSyncher_Logger, this.getLogMsgPrefix(  s"node number:${pe.getSysTag},start block number:${startHeight},Get a data request from  $sender" + "～" + selfAddr))

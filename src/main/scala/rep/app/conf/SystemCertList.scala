@@ -28,7 +28,7 @@ import rep.log.RepLogger
  * */
 object SystemCertList {
   private var mySystemCertList:Set[String] = (new scala.collection.mutable.ArrayBuffer[String]()).toSet[String]
-  
+
   private  def loadVoteNodeListForCert = {
     synchronized{
       if(this.mySystemCertList.isEmpty){
@@ -36,22 +36,22 @@ object SystemCertList {
         val clist = SignTool.getAliasOfTrustkey
         var rlist : scala.collection.mutable.ArrayBuffer[String] = new scala.collection.mutable.ArrayBuffer[String]()
         for( i <- 0 until clist.size()){
-           val alias = clist.get(i)
-           if(list.contains(alias)){
-             rlist += alias
-           }
+          val alias = clist.get(i)
+          if(list.contains(alias)){
+            rlist += alias
+          }
         }
         this.mySystemCertList = rlist.toSet[String]
         RepLogger.trace(RepLogger.System_Logger, this.mySystemCertList.mkString(","))
       }
     }
   }
-  
+
   def getSystemCertList:Set[String] = {
     if(this.mySystemCertList.isEmpty){
       loadVoteNodeListForCert
     }
     this.mySystemCertList
   }
-  
+
 }

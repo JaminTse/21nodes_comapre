@@ -26,16 +26,16 @@ class BlockFileReader(val SystemName:String) {
   private val FileName = "Repchain_BlockFile_"
   private val BlockDataPath = StoreConfig4Scala.getBlockPath(SystemName)
   private var rf: RandomAccessFile = null;
-  private var channel: FileChannel = null; 
+  private var channel: FileChannel = null;
   private var fileindex:Long = 0
 
-  
+
   private def openChannel(fileno:Long)={
-      if(rf == null || (rf != null && fileindex != fileno)){
-        createChannel(fileno)
-      }
+    if(rf == null || (rf != null && fileindex != fileno)){
+      createChannel(fileno)
+    }
   }
-  
+
   private def createChannel(fileno:Long)={
     synchronized {
       this.FreeResouce
@@ -52,7 +52,7 @@ class BlockFileReader(val SystemName:String) {
       }
     }
   }
-  
+
   /**
    * @author jiangbuyun
    * @version	1.0
@@ -63,9 +63,9 @@ class BlockFileReader(val SystemName:String) {
    */
   def readBlock(fileno: Long, startpos: Long, length: Int): Array[Byte] = {
     var rb: Array[Byte] = null
-   
+
     synchronized {
-      
+
       try {
         openChannel(fileno)
         if(channel != null){
@@ -84,7 +84,7 @@ class BlockFileReader(val SystemName:String) {
 
     rb
   }
-  
+
   def FreeResouce = {
     if (channel != null) {
       try {

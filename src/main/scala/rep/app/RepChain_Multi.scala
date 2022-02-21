@@ -25,9 +25,9 @@ import scala.collection.mutable
 
 
 /**
-  * RepChain启动单机超5个节点以上，配合https://gitee.com/BTAJL/RCJava/blob/dev_sdk_preview/src/main/java/com/Example/cert/GenerateJksFiles.java使用
-  * @author zyf
-  */
+ * RepChain启动单机超5个节点以上，配合https://gitee.com/BTAJL/RCJava/blob/dev_sdk_preview/src/main/java/com/Example/cert/GenerateJksFiles.java使用
+ * @author zyf
+ */
 object RepChain_Multi {
 
   def main(args: Array[String]): Unit = {
@@ -68,7 +68,7 @@ object RepChain_Multi {
     nodes += sys1
 
     // 可以根据自己的需要将nodelist.length改成对应的节点数
-    for (i <- 1 to 4) {
+    for (i <- 1 to 20) {
       Thread.sleep(500)
       val sysN = new ClusterSystem(nodelist(i), InitType.MULTI_INIT, true)
       sysN.init

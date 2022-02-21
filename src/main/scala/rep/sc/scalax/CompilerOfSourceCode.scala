@@ -71,8 +71,8 @@ class CompilerOfSourceCode(targetDir: Option[File], bDebug: Boolean) {
   val classLoader = new ScalaForClassLoaderOfCustom(target, this.getClass.getClassLoader)
   //类定义缓冲
   val classCache = mutable.Map[String, Class[_]]()
-  
-   //动态编译环境设置
+
+  //动态编译环境设置
   val settings = new Settings()
   settings.deprecation.value = true // enable detailed deprecation warnings
   settings.unchecked.value = true // enable detailed unchecked warnings
@@ -80,31 +80,31 @@ class CompilerOfSourceCode(targetDir: Option[File], bDebug: Boolean) {
   settings.usejavacp.value = true
   settings.classpath.append(getSourcePath())
   settings.classpath.append(this.getClass.getClassLoader.getResource("").toString())
-  
+
   settings.classpath.append("/Users/jiangbuyun/.ivy2/cache")
   //tb.mirror.classLoader.
   //tb.mirror.universe.runtimeMirror(getClass.getClassLoader).
   println(s"getSourcePath=${getSourcePath()}")
   println(s"getclasspath=${this.getClass.getClassLoader.getResource("")}")
-  
+
   var path = System.getProperty("java.class.path");
- val firstIndex = path.lastIndexOf(System.getProperty("path.separator")) + 1;
- val lastIndex = path.lastIndexOf(File.separator) + 1;
- path = path.substring(firstIndex, lastIndex);
+  val firstIndex = path.lastIndexOf(System.getProperty("path.separator")) + 1;
+  val lastIndex = path.lastIndexOf(File.separator) + 1;
+  path = path.substring(firstIndex, lastIndex);
   println(s"systemclasspath=${path}")
-  
+
   println(s"userclasspath=${System.getProperty("user.dir")}")
-  
+
   settings.classpath.append(path)
-  
+
   //this.getClass.getClassLoader.
-   
-   val outputDirName = "."
-   val outputDir = new VirtualDirectory(outputDirName, None)
-   settings.outputDirs.setSingleOutput(outputDir)
- 
-   val global = Global(settings, new ConsoleReporter(settings))
-   val run = new global.Run
+
+  val outputDirName = "."
+  val outputDir = new VirtualDirectory(outputDirName, None)
+  settings.outputDirs.setSingleOutput(outputDir)
+
+  val global = Global(settings, new ConsoleReporter(settings))
+  val run = new global.Run
 
   /**
    * 根据运行路径获得源文件路径
@@ -172,41 +172,41 @@ class CompilerOfSourceCode(targetDir: Option[File], bDebug: Boolean) {
     try{
       cl = Some(Class.forName(midifiedCode._1))
     }catch {
-      case e:Throwable =>     
-        cl = findClass(midifiedCode._1)          
-    } 
+      case e:Throwable =>
+        cl = findClass(midifiedCode._1)
+    }
     //if(cl!=None)
     //    return cl.get  
-    
-   if(path_source!=null)
-      saveCode(midifiedCode._1,midifiedCode._2)  
-        
+
+    if(path_source!=null)
+      saveCode(midifiedCode._1,midifiedCode._2)
+
     var cls = compile(midifiedCode._1,midifiedCode._2)
 
     classCache(midifiedCode._1) = cls
     cls
   }
-  
+
   def compile(className:String, ncode:String): Class[_] = {
-   val inputFileName = className+".scala"
-   val inputFile = new BatchSourceFile(inputFileName, ncode)
+    val inputFileName = className+".scala"
+    val inputFile = new BatchSourceFile(inputFileName, ncode)
 
-   println(s"input file=${inputFile.path}")
-   println(s"setting output dir =${settings.outputDirs.getSingleOutput.get.path}")
-   
-   val parser = new global.syntaxAnalyzer.SourceFileParser(inputFile)
-   val tree = parser.parse
-   println(tree)
+    println(s"input file=${inputFile.path}")
+    println(s"setting output dir =${settings.outputDirs.getSingleOutput.get.path}")
 
-   run.compileSources(List(inputFile))
+    val parser = new global.syntaxAnalyzer.SourceFileParser(inputFile)
+    val tree = parser.parse
+    println(tree)
 
-   val outputFileName = className+".class"
-   val outputFile =outputDir.lookupName(outputFileName, false)
+    run.compileSources(List(inputFile))
 
-   val classBytes = outputFile.toByteArray
-   println("Number of bytes in output file: " + classBytes.length)
-   
-   classLoader.LoadClassForByte(className, classBytes)
+    val outputFileName = className+".class"
+    val outputFile =outputDir.lookupName(outputFileName, false)
+
+    val classBytes = outputFile.toByteArray
+    println("Number of bytes in output file: " + classBytes.length)
+
+    classLoader.LoadClassForByte(className, classBytes)
   }
 
   /**

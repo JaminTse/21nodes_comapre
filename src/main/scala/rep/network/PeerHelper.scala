@@ -104,7 +104,7 @@ object PeerHelper {
     t = t.withSpec(cip)
     t = t.withType(rep.protos.peer.Transaction.Type.CHAINCODE_DEPLOY)
     t = t.clearSignature
-    
+
     val certid = IdTool.getCertIdFromName(nodeName)
     var sobj = Signature(Option(certid), Option(Timestamp(millis / 1000, ((millis % 1000) * 1000000).toInt)))
     sobj = sobj.withSignature(ByteString.copyFrom(SignTool.sign(nodeName, t.toByteArray)))
@@ -113,9 +113,9 @@ object PeerHelper {
 
     t
   }
-  
+
   def createTransaction4State(nodeName: String, chaincodeId: ChaincodeId,
-                               state:Boolean): Transaction = {
+                              state:Boolean): Transaction = {
     var t: Transaction = new Transaction()
     val millis = TimeUtils.getCurrentTime()
     if (chaincodeId == null) t
@@ -164,21 +164,21 @@ class PeerHelper(name: String) extends ModuleBase(name) {
     case Tick =>
       //val blk = BlockHelper.genesisBlockCreator()
       //chaincode = IdTool.getCid(blk.transactions(0).getCid)
-      
+
       scheduler.scheduleOnce(10.seconds, self, TickInit)
 
     case TickInit =>
       if (SystemProfile.getTranCreateDur > 0)
         scheduler.scheduleOnce(SystemProfile.getTranCreateDur.millis, self, TickInvoke)
- 
+
     case TickInvoke =>
       try {
         //createTransForLoop //在做tps测试到时候，执行该函数，并且注释其他代码
         val t3 = createTransaction4Invoke(pe.getSysTag, chaincode,
           "transfer", Seq(li2))
-        
+
         pe.getActorRef(ActorType.transactionpool) ! t3
-         RepLogger.trace(RepLogger.System_Logger,this.getLogMsgPrefix(s"########################create transaction id =${t3.id}"))
+        RepLogger.trace(RepLogger.System_Logger,this.getLogMsgPrefix(s"########################create transaction id =${t3.id}"))
       } catch {
         case e: RuntimeException => throw e
       }
@@ -188,8 +188,8 @@ class PeerHelper(name: String) extends ModuleBase(name) {
   //自动循环不间断提交交易到系统，用于压力测试或者tps测试时使用。
   def createTransForLoop = {
     var count: Int = 0;
-    if (pe.getSysTag == "121000005l35120456.node1"|| pe.getSysTag == "12110107bi45jh675g.node2" || pe.getSysTag=="122000002n00123567.node3" || 
-        pe.getSysTag=="921000005k36123789.node4" || pe.getSysTag=="921000006e0012v696.node5")
+    if (pe.getSysTag == "121000005l35120456.node1"|| pe.getSysTag == "12110107bi45jh675g.node2" || pe.getSysTag=="122000002n00123567.node3" ||
+      pe.getSysTag=="921000005k36123789.node4" || pe.getSysTag=="921000006e0012v696.node5")
       while (true) {
         try {
           val start = System.currentTimeMillis()
@@ -197,7 +197,7 @@ class PeerHelper(name: String) extends ModuleBase(name) {
           //todo 在运行时需要传送正确的chaincodename
           //val chaincodeId = new ChaincodeId("chaincode-name", 1)
           val t3 = createTransaction4Invoke(pe.getSysTag, chaincode,
-          "transfer", Seq(li2))
+            "transfer", Seq(li2))
           //pe.getActorRef(ActorType.transactionpool) ! t3
           pe.getTransPoolMgr.putTran(t3,pe.getSysTag)
           //mediator ! Publish(Topic.Transaction, t3)

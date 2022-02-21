@@ -28,14 +28,14 @@ import akka.actor.ActorSystem
 import rep.utils.IdTool
 
 class EventActor4Stage(eventactor: ActorRef) extends GraphStage[SourceShape[Event]]{
-//class EventActor4Stage(system: ActorSystem) extends GraphStage[SourceShape[Event]]{
+  //class EventActor4Stage(system: ActorSystem) extends GraphStage[SourceShape[Event]]{
   import scala.concurrent.duration._
-  
+
   //val evtactor = system.actorOf(Props[RecvEventActor],"RecvEventActor_"+IdTool.getUUID)
-  
+
   val out: Outlet[Event] = Outlet("EventActor4Stage")
   override def shape: SourceShape[Event] = SourceShape(out)
-  
+
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =  new GraphStageLogic(shape) {
     implicit def self = stageActor.ref
 
@@ -46,11 +46,11 @@ class EventActor4Stage(eventactor: ActorRef) extends GraphStage[SourceShape[Even
     }
 
     setHandler(out,new OutHandler{
-         override def onPull():Unit={
-           //此处被messageHandler取代
-         }
-       })
-    
+      override def onPull():Unit={
+        //此处被messageHandler取代
+      }
+    })
+
     private def messageHandler(receive: (ActorRef, Any)): Unit = {
       receive match {
         case (_, evt:Event) => {
@@ -62,5 +62,5 @@ class EventActor4Stage(eventactor: ActorRef) extends GraphStage[SourceShape[Even
       }
     }
   }
-  
+
 }

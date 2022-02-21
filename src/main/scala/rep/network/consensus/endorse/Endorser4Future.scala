@@ -58,15 +58,15 @@ class Endorser4Future(moduleName: String) extends ModuleBase(moduleName) {
   //import java.util.concurrent.Executors
 
   implicit val timeout = Timeout(TimePolicy.getTimeoutPreload seconds)
-  
+
   override def preStart(): Unit = {
     RepLogger.info(RepLogger.Consensus_Logger, this.getLogMsgPrefix("Endorser4Future Start"))
   }
 
   //背书块的交易预执行,然后验证block
   private def AskPreloadTransactionOfBlock(block: Block): Future[Boolean] =
-    //pe.getActorRef(ActorType.preloaderoftransaction).ask(PreTransBlock(block, "endors"))(timeout).mapTo[PreTransBlockResult].flatMap(f => {
-    pe.getActorRef(ActorType.dispatchofpreload).ask(PreTransBlock(block, "endors"))(timeout).mapTo[PreTransBlockResult].flatMap(f => {  
+  //pe.getActorRef(ActorType.preloaderoftransaction).ask(PreTransBlock(block, "endors"))(timeout).mapTo[PreTransBlockResult].flatMap(f => {
+    pe.getActorRef(ActorType.dispatchofpreload).ask(PreTransBlock(block, "endors"))(timeout).mapTo[PreTransBlockResult].flatMap(f => {
       //println(s"${pe.getSysTag}:entry AskPreloadTransactionOfBlock")
       val result = Promise[Boolean]
       var tmpblock = f.blc.withHashOfBlock(block.hashOfBlock)
@@ -158,7 +158,7 @@ class Endorser4Future(moduleName: String) extends ModuleBase(moduleName) {
     result = r._1
     result
   }
-  
+
   private def isAllowEndorse(info: EndorsementInfo): Int = {
     if (info.blocker == pe.getSysTag) {
       RepLogger.trace(RepLogger.Consensus_Logger, this.getLogMsgPrefix( s"endorser is itself,do not endorse,recv endorse request,endorse height=${info.blc.height},local height=${pe.getCurrentHeight}"))
@@ -223,7 +223,7 @@ class Endorser4Future(moduleName: String) extends ModuleBase(moduleName) {
     }*/
     SendVerifyEndorsementInfo(info,result1)
   }
-  
+
   private def SendVerifyEndorsementInfo(info: EndorsementInfo,result1:Boolean) = {
     if (result1) {
       RepLogger.trace(RepLogger.Consensus_Logger, this.getLogMsgPrefix(s"${pe.getSysTag}:entry 7"))

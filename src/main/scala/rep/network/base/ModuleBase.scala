@@ -29,34 +29,34 @@ import rep.utils.GlobalUtils.{ActorType}
 
 
 /**
-  * 模块基础类伴生对象
-  *
-  * @author shidianyue
-  * @version 1.0
-  * 
-  * @update 2018-05 jiangbuyun
-  **/
+ * 模块基础类伴生对象
+ *
+ * @author shidianyue
+ * @version 1.0
+ *
+ * @update 2018-05 jiangbuyun
+ **/
 object ModuleBase {
 }
 
 /**
-  * 系统模块基础类
-  *
-  * @author shidianyue
-  * @version 1.0
-  * @param name 模块名称
-  **/
+ * 系统模块基础类
+ *
+ * @author shidianyue
+ * @version 1.0
+ * @param name 模块名称
+ **/
 
 abstract class  ModuleBase(name: String) extends Actor  with ClusterActor with BaseActor{
   val pe = PeerExtension(context.system)
   val atype = ModuleNameToIntActorType
   atype match{
-    case 0 => 
-    case _ => 
+    case 0 =>
+    case _ =>
       RepLogger.info(RepLogger.System_Logger, this.getLogMsgPrefix(s"--------Actor create,actor name=${name}"))
       pe.register(atype, self)
   }
-  
+
   private def ModuleNameToIntActorType:Int={
     name match{
       case "memberlistener" => 1
@@ -83,22 +83,22 @@ abstract class  ModuleBase(name: String) extends Actor  with ClusterActor with B
       case _ => 0
     }
   }
-  
-    
+
+
   /**
-    * 日志前缀
-    *
-    */
+   * 日志前缀
+   *
+   */
   def getLogMsgPrefix(msg:String):String = {
     s"${pe.getSysTag}~${this.name}~${msg}~"
   }
-  
+
   /**
-    * 事件时间戳封装
-    * @param msg
-    * @param step
-    * @param actorRef
-    */
+   * 事件时间戳封装
+   * @param msg
+   * @param step
+   * @param actorRef
+   */
   def logTime(timetag:String,time:Long,isstart:Boolean,bheight:Long,trannum:Int): Unit = {
     if(isstart){
       RepTimeTracer.setStartTime(pe.getSysTag, timetag, time,bheight,trannum)

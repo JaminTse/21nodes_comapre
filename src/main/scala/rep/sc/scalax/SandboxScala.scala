@@ -44,14 +44,14 @@ class SandboxScala(cid: ChaincodeId) extends Sandbox(cid) {
 
   private def LoadClass(ctx: ContractContext, txcid: String, t: Transaction) = {
     val code = t.para.spec.get.codePackage
-    val clazz = Compiler.compilef(code, txcid)  
+    val clazz = Compiler.compilef(code, txcid)
     //val clazz = CompilerOfSourceCode.compilef(code, txcid)  
     try{
       cobj = clazz.getConstructor().newInstance().asInstanceOf[IContract]
     }catch{
       case e:Exception =>cobj = clazz.newInstance().asInstanceOf[IContract]
     }
-    
+
     cobj.init(ctx)
   }
 
@@ -114,13 +114,13 @@ class SandboxScala(cid: ChaincodeId) extends Sandbox(cid) {
           val key_tx_state = WorldStateKeyPreFix + tx_cid + PRE_STATE
           val state = t.para.state.get
           val state_bytes = serialise(state)
-          
+
           val oldstate = shim.sr.Get(key_tx_state)
           var oldbytestring = ByteString.EMPTY
           if(oldstate != null){
             oldbytestring = ByteString.copyFrom(state_bytes)
           }
-          
+
           shim.sr.Put(key_tx_state, state_bytes)
           shim.ol.append(OperLog(key_tx_state, oldbytestring, ByteString.copyFrom(state_bytes)))
           null

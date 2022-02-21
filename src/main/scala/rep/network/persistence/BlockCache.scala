@@ -24,28 +24,28 @@ import rep.network.persistence.Storager.{ BlockRestore}
 
 class BlockCache {
   private implicit var caches  = new ConcurrentHashMap[Long, BlockRestore] asScala
-  
+
   def addToCache(block:BlockRestore)={
     this.caches += block.blk.height -> block
   }
-  
+
   def removeFromCache(height:Long)={
     this.caches -= height
   }
-  
+
   def getBlockFromCache(height:Long):BlockRestore={
     this.caches(height)
   }
-  
+
   def exist(height:Long):Boolean={
     this.caches.contains(height)
   }
-  
+
   def isEmpty:Boolean={
     this.caches.isEmpty
   }
-  
+
   def getKeyArray4Sort:Array[Long]={
-    this.caches.keys.toArray.sortWith(_ < _) 
+    this.caches.keys.toArray.sortWith(_ < _)
   }
 }

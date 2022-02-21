@@ -135,7 +135,7 @@ class SandboxDispatcher(moduleName: String, cid: String) extends ModuleBase(modu
     if (txid != null) {
       //val txid_str = deserialise(txid).asInstanceOf[String]
       //if (txid_str == this.txidOfContractDeploy) {
-        b = true
+      b = true
       //}
     }
     b
@@ -248,7 +248,7 @@ class SandboxDispatcher(moduleName: String, cid: String) extends ModuleBase(modu
                 case ChaincodeDeploy.CodeType.CODE_SCALA_PARALLEL =>
                   RepLogger.debug(RepLogger.Sandbox_Logger, s"sandbox dispatcher ${cid},send msg to Parallel sandbox from parallel,txid=${dotrans.t.id},da=${dotrans.da}.")
                   this.RouterOfParallelSandboxs.route(DoTransactionOfSandbox(dotrans.t, dotrans.da, this.ContractState), sender)
-                case _ => 
+                case _ =>
                   RepLogger.debug(RepLogger.Sandbox_Logger, s"sandbox dispatcher ${cid},send msg to serial sandbox from other reason,txid=${dotrans.t.id},da=${dotrans.da}.")
                   this.SerialSandbox.forward(DoTransactionOfSandbox(dotrans.t, dotrans.da, this.ContractState))
               }

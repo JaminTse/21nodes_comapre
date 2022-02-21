@@ -20,31 +20,31 @@ package rep.network.consensus.vote
 
 
 /**
-  * 特质:全局节点控制
-  * Created by shidianyue on 2017/5/15.
-  * @update 2018-05 jiangbuyun
-  */
+ * 特质:全局节点控制
+ * Created by shidianyue on 2017/5/15.
+ * @update 2018-05 jiangbuyun
+ */
 trait VoterBase {
 
-  
-  
-  
+
+
+
   /**
-    * 获取出块人（竞争胜出者）
-    * @param nodes
-    * @tparam T
-    * @return
-    */
+   * 获取出块人（竞争胜出者）
+   * @param nodes
+   * @tparam T
+   * @return
+   */
   //def blocker[T](nodes:Set[T], position:Int):Option[T]
   def blocker(nodes:Array[String], position:Int):String
 
   /**
-    * 获取候选人节点
-    * @param nodes
-    * @tparam T
-    * @param seed 随机种子(这里写的不太好，应该改一下）
-    * @return
-    */
+   * 获取候选人节点
+   * @param nodes
+   * @tparam T
+   * @param seed 随机种子(这里写的不太好，应该改一下）
+   * @return
+   */
   //def candidators[T](nodes:Set[T], seed:Array[Byte]):Set[T]
   def candidators(Systemname:String,hash:String,nodes:Set[String], seed:Array[Byte]):Array[String]
 }

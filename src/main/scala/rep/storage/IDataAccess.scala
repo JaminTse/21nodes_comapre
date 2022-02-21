@@ -113,17 +113,17 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
     synchObject.synchronized {
       try {
         if (this.IsTrans  && this.batch != null) {
-            try {
-              this.batch.close()
-            } catch {
-              case e: Exception => {
-                RepLogger.error(RepLogger.Storager_Logger,
-                  "IDataAccess_" + SystemName + "_" + "DBOP BeginTrans failed, error info= " + e.getMessage)
-                throw e
-              }
-            } finally {
-              this.batch = null
+          try {
+            this.batch.close()
+          } catch {
+            case e: Exception => {
+              RepLogger.error(RepLogger.Storager_Logger,
+                "IDataAccess_" + SystemName + "_" + "DBOP BeginTrans failed, error info= " + e.getMessage)
+              throw e
             }
+          } finally {
+            this.batch = null
+          }
         }
         this.IsTrans = true
         this.batch = db.createWriteBatch()
@@ -131,7 +131,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
         case e: Exception => {
           this.IsTrans = false
           this.batch = null
-          RepLogger.error(RepLogger.Storager_Logger,  
+          RepLogger.error(RepLogger.Storager_Logger,
             "IDataAccess_" + SystemName + "_" + "DBOP BeginTrans failed, error info= " + e.getMessage)
           throw e
         }
@@ -139,7 +139,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
     }
   }
 
-  
+
 
   /**
    * @author jiangbuyun
@@ -157,7 +157,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
         }
       } catch {
         case e: Exception => {
-          RepLogger.error(RepLogger.Storager_Logger,  
+          RepLogger.error(RepLogger.Storager_Logger,
             "IDataAccess_" + SystemName + "_" + "DBOP CommitTrans failed, error info= " + e.getMessage)
           throw e
         }
@@ -169,7 +169,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
           }
         } catch {
           case e: Exception => {
-            RepLogger.error(RepLogger.Storager_Logger,  
+            RepLogger.error(RepLogger.Storager_Logger,
               "IDataAccess_" + SystemName + "_" + "DBOP CommitTrans failed, error info= " + e.getMessage)
           }
         } finally {
@@ -195,7 +195,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
         }
       } catch {
         case e: Exception => {
-          RepLogger.error(RepLogger.Storager_Logger,  
+          RepLogger.error(RepLogger.Storager_Logger,
             "IDataAccess_" + SystemName + "_" + "DBOP RollbackTrans failed, error info= " + e.getMessage)
           throw e
         }
@@ -214,7 +214,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
     }
     v
   }
-  
+
   protected def ArrayByte2Option(bb : Array[Byte]):Option[Array[Byte]] = {
     var v :Option[Array[Byte]] = None
     if(bb != null && bb.length > 0){
@@ -238,7 +238,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
     } catch {
       case e: Exception => {
         rb = null
-        RepLogger.error(RepLogger.Storager_Logger,  
+        RepLogger.error(RepLogger.Storager_Logger,
           "IDataAccess_" + SystemName + "_" + "DBOP Get failed, error info= " + e.getMessage)
         throw e
       }
@@ -259,14 +259,14 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
     synchObject.synchronized {
       try {
         var v: Array[Byte] = bb
-        
+
         if(bb == null){
           v = None.toArray
         }
-        
+
         if (this.IsTrans) {
           this.batch.put(key.getBytes(), v)
-          
+
         } else {
           this.db.put(key.getBytes(), v)
         }
@@ -274,7 +274,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
       } catch {
         case e: Exception => {
           b = false
-          RepLogger.error(RepLogger.Storager_Logger,  
+          RepLogger.error(RepLogger.Storager_Logger,
             "IDataAccess_" + SystemName + "_" + "DBOP Put failed, error info= " + e.getMessage)
           throw e
         }
@@ -296,21 +296,21 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
   override def Delete(key: String): Boolean = {
     var b: Boolean = true;
     synchObject.synchronized{
-			try{
-				if(this.IsTrans){
-					this.batch.delete(key.getBytes());
-				}else{
-					this.db.delete(key.getBytes());
-				}
-			}catch{
-				case e:Exception =>{
-			    b = false
-			    RepLogger.error(RepLogger.Storager_Logger,  
+      try{
+        if(this.IsTrans){
+          this.batch.delete(key.getBytes());
+        }else{
+          this.db.delete(key.getBytes());
+        }
+      }catch{
+        case e:Exception =>{
+          b = false
+          RepLogger.error(RepLogger.Storager_Logger,
             "IDataAccess_" + SystemName + "_" + "DBOP Delete failed, error info= " + e.getMessage)
-  				throw e
-			  }
-			}
-		}
+          throw e
+        }
+      }
+    }
     b;
   }
 
@@ -357,7 +357,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
         }
       } catch {
         case e: Exception => {
-          RepLogger.error(RepLogger.Storager_Logger,  
+          RepLogger.error(RepLogger.Storager_Logger,
             "IDataAccess_" + SystemName + "_" + "DBOP FindByLike failed, error info= " + e.getMessage)
           throw e
         }
@@ -367,7 +367,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
             iterator.close()
           } catch {
             case e: Exception => {
-              RepLogger.error(RepLogger.Storager_Logger,  
+              RepLogger.error(RepLogger.Storager_Logger,
                 "IDataAccess_" + SystemName + "_" + "DBOP FindByLike failed, error info= " + e.getMessage)
             }
           }
@@ -458,7 +458,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
    * @return	返回block的字节数组，如果没有找到，返回null
    */
   def getBlockByTxId(bh: String): Array[Byte]
-  
+
   /**
    * @author jiangbuyun
    * @version	1.0
@@ -468,7 +468,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
    * @return	返回block对象，如果没有找到，返回null
    */
   def getBlock4ObjectByTxId(bh:String):Block
-  
+
   /**
    * @author jiangbuyun
    * @version	1.0
@@ -478,7 +478,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
    * @return	返回Transaction对象，如果没有找到，返回None
    */
   def getTransOfContractFromChaincodeId(cid:String): Option[Transaction]
-  
+
   /**
    * @author jiangbuyun
    * @version	1.0
@@ -534,7 +534,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
    * @return	返回指定长度的Block数组，如果没有找到，返回长度=0的数组
    */
   def getBlocks4ObjectFromHeight(h: Int, limits: Int): Array[Block]
-  
+
   /**
    * @author jiangbuyun
    * @version	0.7
@@ -544,8 +544,8 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
    * @return	返回出块时间
    */
   def getBlockTimeOfTxid(txid : String): String
-  
-   /**
+
+  /**
    * @author jiangbuyun
    * @version	0.7
    * @since	2019-09-11
@@ -554,7 +554,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
    * @return	返回出块时间
    */
   def getBlockTimeOfHeight(h : Long): String
-  
+
   /**
    * @author jiangbuyun
    * @version	0.7
@@ -616,7 +616,7 @@ abstract class IDataAccess(val SystemName: String) extends AbstractLevelDB(Syste
    * @return	如果成功返回true，否则返回false
    */
   def rollbackToheight(toHeight: Long):  Boolean
-  
+
   /**
    * @author jiangbuyun
    * @version	0.7

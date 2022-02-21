@@ -90,7 +90,7 @@ class ClusterSystem(sysTag: String, initType: Int, sysStart: Boolean) {
 
   //System.setProperty("scala.concurrent.context.minThreads", "32")
   //System.setProperty("scala.concurrent.context.maxThreads", "32")
-  
+
   /**
    * 是否开启Web Socket（API）
    */
@@ -194,7 +194,7 @@ class ClusterSystem(sysTag: String, initType: Int, sysStart: Boolean) {
 
     RepLogger.trace(RepLogger.System_Logger, sysTag + "~" + "System" + " ~ " + s"System(${sysTag}) init successfully" + " ~ ")
   }
-  
+
   def shutdown = {
     Cluster(sysActor).down(clusterAddr)
   }
@@ -222,6 +222,11 @@ class ClusterSystem(sysTag: String, initType: Int, sysStart: Boolean) {
     moduleManager = sysActor.actorOf(ModuleManager.props("modulemanager", sysTag, enableStatistic, enableWebSocket, true), "modulemanager")
 
     RepLogger.trace(RepLogger.System_Logger, sysTag + "~" + "System" + " ~ " + s"ClusterSystem ${sysTag} start" + " ~ ")
+    //sysActor.logConfiguration()
+    //println("message-frame-size: " + sysActor.settings.config.getBytes("akka.remote.netty.tcp.message-frame-size").toInt)
+    //println("send-buffer-size: " + sysActor.settings.config.getBytes("akka.remote.netty.tcp.send-buffer-size").toInt)
+    //println("receive-buffer-size: " + sysActor.settings.config.getBytes("akka.remote.netty.tcp.receive-buffer-size").toInt)
+    //println("maximum-frame-size: " + sysActor.settings.config.getBytes("akka.remote.netty.tcp.maximum-frame-size").toInt)
   }
 
 }

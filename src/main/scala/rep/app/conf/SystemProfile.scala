@@ -23,16 +23,16 @@ import java.util.List
 import java.util.ArrayList
 
 /**
-  * 系统配置信息缓存对象
-  * @author shidianyue
-  * @version	0.7
-  * @update 2018-05 jiangbuyun
-  * */
+ * 系统配置信息缓存对象
+ * @author shidianyue
+ * @version	0.7
+ * @update 2018-05 jiangbuyun
+ * */
 object SystemProfile {
 
   /**
-    * 交易创建类型
-    */
+   * 交易创建类型
+   */
   case object Trans_Create_Type_Enum {
     val MANUAL = 0 //API创建
     val AUTO = 1 //自动创建
@@ -59,94 +59,94 @@ object SystemProfile {
   private[this] var _HAS_PRELOAD_TRANS_OF_API = true
   private[this] var _IS_VERIFY_OF_ENDORSEMENT = true//is_verify_of_endorsement
   private[this] var _NUMBER_OF_ENDORSEMENT: Int = 2
-  
+
   private[this] var _BLOCKNUMBER_OF_RAFT: Int = 100
-  
+
   private[this] var _DBPATH:String = "" //leveldb数据库文件路径
   private[this] var _BLOCKPATH:String = ""//区块文件的路径
   private[this] var _FILEMAX: Int = 200000000//区块文件的最大长度
-  
-  
+
+
   //实时图的事件是否发送，如果不发送，前端实时图将收不到任何消息。
   private[this] var _REALTIMEGRAPH_ENABLE = 1 ////0 unable;1 enable; default 1
-  
-  
-  
-  
+
+
+
+
   private def SERVERPORT :Int = _SERVERPORT
   private def CHECKCERTVALIDATE:Int = _CHECKCERTVALIDATE
   private def DISKSPACE_ALARM_NUM :Long = _DISKSPACE_ALARM_NUM
   private def CONTRACTOPERATIONMODE:Int=_CONTRACTOPERATIONMODE
   private def GENESISNODENAME:String = _GENESISNODENAME
-  
+
   private def VOTENODELIST : List[String] = _VOTENODELIST
   private def ACCOUNTCHAINCODENAEM = _ACCOUNTCHAINCODENAEM
   private def ACCOUNTCHAINCODVERSION = _ACCOUNTCHAINCODEVERSION
   private def CertStatusChangeFunction = _CertStatusChangeFunction
-  
+
   private def NUMBER_OF_TRANSPROCESSOR = _NUMBER_OF_TRANSPROCESSOR
-  
+
   private def HAS_PRELOAD_TRANS_OF_API = _HAS_PRELOAD_TRANS_OF_API
-  
+
   private def IS_VERIFY_OF_ENDORSEMENT = _IS_VERIFY_OF_ENDORSEMENT
-  
+
   private def NUMBER_OF_ENDORSEMENT = _NUMBER_OF_ENDORSEMENT
   private def BLOCKNUMBER_OF_RAFT = _BLOCKNUMBER_OF_RAFT
-  
+
   private def REALTIMEGRAPH_ENABLE = _REALTIMEGRAPH_ENABLE
-  
+
   private def DBPATH:String = _DBPATH
   private def BLOCKPATH:String = _BLOCKPATH
   private def FILEMAX: Int = _FILEMAX
-  
+
   private def DBPATH_=(value:String):Unit={
     _DBPATH = value
   }
-  
+
   private def REALTIMEGRAPH_ENABLE_=(value:Int):Unit={
     _REALTIMEGRAPH_ENABLE = value
   }
-  
+
   private def BLOCKPATH_=(value:String):Unit={
     _BLOCKPATH = value
   }
-  
+
   private def FILEMAX_=(value:Int):Unit={
     _FILEMAX = value
   }
-  
+
   private def GENESISNODENAME_=(value:String):Unit={
     _GENESISNODENAME = value
   }
-  
+
   private def NUMBER_OF_TRANSPROCESSOR_=(value:Int):Unit={
     _NUMBER_OF_TRANSPROCESSOR = value
   }
-  
+
   private def HAS_PRELOAD_TRANS_OF_API_=(value:Boolean):Unit={
     _HAS_PRELOAD_TRANS_OF_API = value
   }
-  
+
   private def IS_VERIFY_OF_ENDORSEMENT_=(value:Boolean):Unit={
     _IS_VERIFY_OF_ENDORSEMENT = value
   }
-  
+
   private def NUMBER_OF_ENDORSEMENT_=(value:Int):Unit={
     _NUMBER_OF_ENDORSEMENT = value
   }
-  
+
   private def BLOCKNUMBER_OF_RAFT_=(value:Int):Unit={
     _BLOCKNUMBER_OF_RAFT = value
   }
-  
+
   private def VOTENODELIST_=(value: List[String]): Unit = {
-      _VOTENODELIST = value
+    _VOTENODELIST = value
   }
-  
+
   private def ACCOUNTCHAINCODENAEM_=(value:String):Unit={
     _ACCOUNTCHAINCODENAEM = value
   }
-  
+
   private def CertStatusChangeFunction_=(value:String):Unit={
     _CertStatusChangeFunction = value
   }
@@ -154,7 +154,7 @@ object SystemProfile {
   private def ACCOUNTCHAINCODEVERSION_=(value:Int):Unit={
     _ACCOUNTCHAINCODEVERSION = value
   }
-  
+
   private def SERVERPORT_=(value: Int): Unit = {
     _SERVERPORT = value
   }
@@ -162,15 +162,15 @@ object SystemProfile {
   private def CHECKCERTVALIDATE_=(value: Int): Unit = {
     _CHECKCERTVALIDATE = value
   }
-  
+
   private def CONTRACTOPERATIONMODE_=(value: Int): Unit = {
     _CONTRACTOPERATIONMODE = value
   }
-  
+
   private def DISKSPACE_ALARM_NUM_=(value: Long): Unit = {
     _DISKSPACE_ALARM_NUM = value
   }
-  
+
   private def MAX_CATCH_TRANS_NUM: Int = _MAX_CATCH_TRANS_NUM
 
   private def MAX_CATCH_TRANS_NUM_=(value: Int): Unit = {
@@ -178,7 +178,7 @@ object SystemProfile {
   }
 
   private def RETRY_TIME: Int = _RETRY_TIME
-  
+
 
   private def RETRY_TIME_=(value: Int): Unit = {
     _RETRY_TIME = value
@@ -216,15 +216,15 @@ object SystemProfile {
   }
 
   private def BLOCK_LENGTH : Int = _BLOCK_LENGTH
-  
+
   private def BLOCK_LENGTH_=(value: Int): Unit = {
     _BLOCK_LENGTH = value
   }
-  
+
   /**
-    * 初始化配饰信息
-    * @param config
-    */
+   * 初始化配饰信息
+   * @param config
+   */
   def initConfigSystem(config:Config): Unit ={
     LIMIT_BLOCK_TRANS_NUM_=(config.getInt("system.block.trans_num_limit"))
     BLOCK_LENGTH_=(config.getInt("system.block.block_length"))
@@ -242,40 +242,40 @@ object SystemProfile {
     ACCOUNTCHAINCODENAEM_= (config.getString("system.account.chaincodename"))
     ACCOUNTCHAINCODEVERSION_=(config.getInt("system.account.chaincodeversion"))
     CertStatusChangeFunction_= (config.getString("system.account.CertStatusChangeFunction"))
-    
+
     GENESISNODENAME_=(config.getString("system.genesis_node_name"))
     NUMBER_OF_TRANSPROCESSOR_=(config.getInt("system.number_of_transProcessor"))
     HAS_PRELOAD_TRANS_OF_API_=(config.getBoolean("system.has_preload_trans_of_api"))
     IS_VERIFY_OF_ENDORSEMENT_=(config.getBoolean("system.is_verify_of_endorsement"))
     NUMBER_OF_ENDORSEMENT_=(config.getInt("system.number_of_endorsement"))
     BLOCKNUMBER_OF_RAFT_=(config.getInt("system.consensus.blocknumberofraft"))
-    
+
     DBPATH_= (config.getString("system.storage.dbpath"))
     BLOCKPATH_= (config.getString("system.storage.blockpath"))
     FILEMAX_=(config.getInt("system.storage.filemax"))
     REALTIMEGRAPH_ENABLE_=(config.getInt("system.realtimegraph_enable"))
   }
-  
+
   def getRealtimeGraph = REALTIMEGRAPH_ENABLE
-  
+
   def getDBPath = DBPATH
-  
+
   def getBlockPath = BLOCKPATH
-  
+
   def getFileMax = FILEMAX
-  
+
   def getLimitBlockTransNum = LIMIT_BLOCK_TRANS_NUM
-  
+
   def getNumberOfTransProcessor = NUMBER_OF_TRANSPROCESSOR
-  
+
   def getBlockNumberOfRaft = BLOCKNUMBER_OF_RAFT
-  
+
   def getHasPreloadTransOfApi = HAS_PRELOAD_TRANS_OF_API
-  
+
   def getIsVerifyOfEndorsement = IS_VERIFY_OF_ENDORSEMENT
-  
+
   def getNumberOfEndorsement = NUMBER_OF_ENDORSEMENT
-  
+
   def getBlockLength = BLOCK_LENGTH
 
   def getMinBlockTransNum = MIN_BLOCK_TRANS_NUM
@@ -289,22 +289,22 @@ object SystemProfile {
   def getTransCreateType = TRANS_CREATE_TYPE
 
   def getRetryTime = RETRY_TIME
-  
+
   def getDiskSpaceAlarm = DISKSPACE_ALARM_NUM
-  
+
   def getHttpServicePort = SERVERPORT
-  
+
   def getCheckCertValidate = CHECKCERTVALIDATE
-  
+
   def getContractOperationMode = CONTRACTOPERATIONMODE
-  
+
   def getVoteNodeList = VOTENODELIST
-  
+
   def getAccountChaincodeName = ACCOUNTCHAINCODENAEM
-  
+
   def getCertStatusChangeFunction = CertStatusChangeFunction
 
   def getAccountChaincodeVersion = ACCOUNTCHAINCODVERSION
-  
+
   def getGenesisNodeName = GENESISNODENAME
 }

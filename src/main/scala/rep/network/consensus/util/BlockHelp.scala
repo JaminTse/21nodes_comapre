@@ -35,7 +35,7 @@ import rep.crypto.cert.SignTool
 import rep.utils.IdTool
 
 object BlockHelp {
-/****************************背书相关的操作开始**********************************************************/
+  /****************************背书相关的操作开始**********************************************************/
   def SignDataOfBlock(NonEndorseDataOfBlock: Array[Byte], alise: String): Signature = {
     try {
       val millis = TimeUtils.getCurrentTime()
@@ -78,9 +78,9 @@ object BlockHelp {
       case e: RuntimeException => throw e
     }
   }
-  
-  
-/****************************背书相关的操作结束**********************************************************/
+
+
+  /****************************背书相关的操作结束**********************************************************/
 
   //该方法在预执行结束之后才能调用
   def AddBlockHash(block: Block): Block = {
@@ -100,7 +100,7 @@ object BlockHelp {
       case e: RuntimeException => throw e
     }
   }
-  
+
   //打包交易到区块，等待预执行
   def WaitingForExecutionOfBlock(preBlockHash: String, h: Long, trans: Seq[Transaction]): Block = {
     try {

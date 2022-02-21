@@ -21,20 +21,20 @@ import rep.app.system.ClusterSystem
 import rep.app.system.ClusterSystem.InitType
 
 /**
-  * Repchain app start
-  * @author c4w 2017/9/24.
-  */
+ * Repchain app start
+ * @author c4w 2017/9/24.
+ */
 object Repchain {
 
   def main(args: Array[String]): Unit = {
 
     //创建系统实例
-     var nodelist : Array[String] = new Array[String] (4)
-     nodelist(0) = "12110107bi45jh675g.node2"
-     nodelist(1) = "122000002n00123567.node3"
-     nodelist(2) = "921000005k36123789.node4"
-     nodelist(3) = "921000006e0012v696.node5"
-     
+    var nodelist : Array[String] = new Array[String] (4)
+    nodelist(0) = "12110107bi45jh675g.node2"
+    nodelist(1) = "122000002n00123567.node3"
+    nodelist(2) = "921000005k36123789.node4"
+    nodelist(3) = "921000006e0012v696.node5"
+
     val sys1 = new ClusterSystem("121000005l35120456.node1",InitType.MULTI_INIT,true)
     sys1.init//初始化（参数和配置信息）
     val joinAddress = sys1.getClusterAddr//获取组网地址
@@ -55,11 +55,11 @@ object Repchain {
 
     var nodes_off = Set.empty[ClusterSystem]
 
-     var tmpsystem : ClusterSystem = null
-     
+    var tmpsystem : ClusterSystem = null
+
     for(i <- 2 to node_max) {
       Thread.sleep(2000)
-      
+
       val len = nodes.size
       val sys = new ClusterSystem(nodelist(i-2),InitType.MULTI_INIT,true)
       sys.init
@@ -71,17 +71,17 @@ object Repchain {
         tmpsystem = sys
       }
     }
-     
-   /*  Thread.sleep(1000*60*3)
-     tmpsystem.shutdown
-     
-     
-     Thread.sleep(1000*60*2)
-     val sys = new ClusterSystem(nodelist(3),InitType.MULTI_INIT,true)
-      sys.init
-      sys.joinCluster(joinAddress)
-      sys.disableWS()
-      sys.start*/
-     
+
+    /*  Thread.sleep(1000*60*3)
+      tmpsystem.shutdown
+
+
+      Thread.sleep(1000*60*2)
+      val sys = new ClusterSystem(nodelist(3),InitType.MULTI_INIT,true)
+       sys.init
+       sys.joinCluster(joinAddress)
+       sys.disableWS()
+       sys.start*/
+
   }
 }

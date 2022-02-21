@@ -36,8 +36,8 @@ import rep.log.RepLogger
  * @category	该类实现公共方法。
  * */
 abstract class AbstractLevelDB(SystemName:String) extends ILevelDB  {
-  
-  /**
+
+	/**
 	 * @author jiangbuyun
 	 * @version	0.7
 	 * @since	2017-09-28
@@ -45,15 +45,15 @@ abstract class AbstractLevelDB(SystemName:String) extends ILevelDB  {
 	 * @param	b Array[Byte] 待转换字节数组
 	 * @return	返回转换结果，String 如果为null 返回空字符串
 	 * */
-  def toString(b : Array[Byte]):String={
+	def toString(b : Array[Byte]):String={
 		var str : String = ""
 		if(b != null){
-		  str = new String(b)
+			str = new String(b)
 		}
 		str
 	}
-	
-   /**
+
+	/**
 	 * @author jiangbuyun
 	 * @version	0.7
 	 * @since	2017-09-28
@@ -64,19 +64,19 @@ abstract class AbstractLevelDB(SystemName:String) extends ILevelDB  {
 	def toLong(b : Array[Byte]):Long={
 		var l : Long = -1
 		if(b != null){
-		  val str = toString(b)
-  		try{
-  			l = str.toLong
-  		}catch{
-  			case e:Exception =>{
-  			  RepLogger.error(RepLogger.Storager_Logger,  
-  			      "DBOP toLong failed, error info= "+e.getMessage)
-			  }
-  		}
+			val str = toString(b)
+			try{
+				l = str.toLong
+			}catch{
+				case e:Exception =>{
+					RepLogger.error(RepLogger.Storager_Logger,
+						"DBOP toLong failed, error info= "+e.getMessage)
+				}
+			}
 		}
 		l
 	}
-	
+
 	/**
 	 * @author jiangbuyun
 	 * @version	0.7
@@ -88,20 +88,20 @@ abstract class AbstractLevelDB(SystemName:String) extends ILevelDB  {
 	def toInt(b : Array[Byte]):Int={
 		var l : Int = -1
 		if(b != null){
-		  val str = toString(b)
-  		try{
-  			l = str.toInt
-  		}catch{
-  			case e:Exception =>{
-  			  RepLogger.error(RepLogger.Storager_Logger,  
-  			      "DBOP toInt failed, error info= "+e.getMessage)
-			  }
-  		}
+			val str = toString(b)
+			try{
+				l = str.toInt
+			}catch{
+				case e:Exception =>{
+					RepLogger.error(RepLogger.Storager_Logger,
+						"DBOP toInt failed, error info= "+e.getMessage)
+				}
+			}
 		}
 		l
 	}
-	
-	 /**
+
+	/**
 	 * @author jiangbuyun
 	 * @version	0.7
 	 * @since	2017-09-28
@@ -110,14 +110,14 @@ abstract class AbstractLevelDB(SystemName:String) extends ILevelDB  {
 	 * @return	返回转换结果，String 如果为null 返回空字符串
 	 * */
 	def byteToString(a:Array[Byte]):String={
-	    var s = "" 
-	    if(a != null){
-	      s = new String(a) 
-	    }
-	    s
-	  }
-	
-	 /**
+		var s = ""
+		if(a != null){
+			s = new String(a)
+		}
+		s
+	}
+
+	/**
 	 * @author jiangbuyun
 	 * @version	0.7
 	 * @since	2017-09-28
@@ -126,11 +126,11 @@ abstract class AbstractLevelDB(SystemName:String) extends ILevelDB  {
 	 * @return	无
 	 * */
 	def printlnHashMap(map : mutable.HashMap[String,Array[Byte]])={
-	  if(map != null){
-	    map.foreach(f=>{
-	      RepLogger.trace(RepLogger.Storager_Logger,  
-  			      "\tkey="+f._1 + "\tvalue=" +toString(f._2))
-	    })
-	  }
+		if(map != null){
+			map.foreach(f=>{
+				RepLogger.trace(RepLogger.Storager_Logger,
+					"\tkey="+f._1 + "\tvalue=" +toString(f._2))
+			})
+		}
 	}
 }

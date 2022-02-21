@@ -30,26 +30,26 @@ import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization.write
 import org.json4s.native.Serialization.read
 /**
-  * Created by shidianyue on 2017/6/9.
-  * updated by c4w 2019/3
-  */
+ * Created by shidianyue on 2017/6/9.
+ * updated by c4w 2019/3
+ */
 object SerializeUtils {
   implicit val formats = DefaultFormats
 
   /**
-    * Java 序列化方法
-    * @param value
-    * @return
-    */
+   * Java 序列化方法
+   * @param value
+   * @return
+   */
   def serialise(value: Any): Array[Byte] = {
     KryoInjection(value)
   }
 
   /**
-    * Java 反序列化方法
-    * @param bytes
-    * @return
-    */
+   * Java 反序列化方法
+   * @param bytes
+   * @return
+   */
   def deserialise(bytes: Array[Byte]): Any = {
     if(bytes == null)
       return null;
@@ -61,28 +61,28 @@ object SerializeUtils {
     }
   }
 
-def compactJson(src: Any): String = {
+  def compactJson(src: Any): String = {
     import org.json4s.native.Serialization
     import org.json4s.native.JsonMethods._
 
     implicit val formats = Serialization.formats(NoTypeHints)
     compact(render(Extraction.decompose(src)))
-  }  
+  }
 
   /**
-    * Json对象序列化
-    * @param value
-    * @return
-    */
+   * Json对象序列化
+   * @param value
+   * @return
+   */
   def toJson(v: AnyRef): String = {
     write(v)
   }
 
   /**
-    * Json对象反序列化
-    * @param bytes
-    * @return
-    */
+   * Json对象反序列化
+   * @param bytes
+   * @return
+   */
   def fromJson[A: Manifest](s: String): A = {
     read[A](s)
   }

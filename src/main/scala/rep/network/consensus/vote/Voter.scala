@@ -85,7 +85,7 @@ class Voter(moduleName: String) extends ModuleBase(moduleName) with CRFDVoter {
       pe.setConfirmHeight(0)
       pe.setCreateHeight(0)
     }
-    
+
     RepLogger.trace(RepLogger.Vote_Logger, this.getLogMsgPrefix(s"sysname=${pe.getSysTag},votelist=${candidator.toArray[String].mkString("|")},idx=${idx}"))
     this.Blocker = BlockerInfo(blocker(candidator.toArray[String], idx), idx, System.currentTimeMillis(), currentblockhash, currentheight)
     pe.resetBlocker(this.Blocker)
@@ -107,7 +107,7 @@ class Voter(moduleName: String) extends ModuleBase(moduleName) with CRFDVoter {
   }
 
   private def vote4One = {
-    
+
     if(this.Blocker.blocker == ""){
       val maxinfo = pe.getStartVoteInfo
       var currentblockhash:String = ""
@@ -143,7 +143,7 @@ class Voter(moduleName: String) extends ModuleBase(moduleName) with CRFDVoter {
       NoticeBlockerMsg
     }
   }
-  
+
   private def vote = {
     if (checkTranNum) {
       val currentblockhash = pe.getCurrentBlockHash
@@ -214,7 +214,7 @@ class Voter(moduleName: String) extends ModuleBase(moduleName) with CRFDVoter {
       if (NodeHelp.isCandidateNow(pe.getSysTag, SystemCertList.getSystemCertList)) {
         voteMsgHandler
       }
-      
-     
+
+
   }
 }

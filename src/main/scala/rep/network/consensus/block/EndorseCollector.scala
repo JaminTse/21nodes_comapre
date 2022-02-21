@@ -80,7 +80,7 @@ class EndorseCollector(moduleName: String) extends ModuleBase(moduleName) {
     this.recvedEndorse = this.recvedEndorse.empty
   }
 
- 
+
 
   private def CheckAndFinishHandler {
     sendEvent(EventType.PUBLISH_INFO, mediator, pe.getSysTag, Topic.Endorsement, Event.Action.ENDORSEMENT)
@@ -126,13 +126,13 @@ class EndorseCollector(moduleName: String) extends ModuleBase(moduleName) {
       if(!pe.isSynching){
         //block不空，该块的上一个块等于最后存储的hash，背书结果的块hash跟当前发出的块hash一致
         if (this.block != null && this.block.previousBlockHash.toStringUtf8() == pe.getCurrentBlockHash && this.block.hashOfBlock.toStringUtf8() == blockhash) {
-            if (result) {
-              RepLogger.trace(RepLogger.Consensus_Logger, this.getLogMsgPrefix( s"collectioner recv endorsement result,height=${block.height},local height=${pe.getCurrentHeight}"))
-              recvedEndorse += endorser.toString -> endors
-              CheckAndFinishHandler
-            } else {
-              RepLogger.trace(RepLogger.Consensus_Logger, this.getLogMsgPrefix(s"collectioner recv endorsement result,is error,height=${block.height},local height=${pe.getCurrentHeight}"))
-            }
+          if (result) {
+            RepLogger.trace(RepLogger.Consensus_Logger, this.getLogMsgPrefix( s"collectioner recv endorsement result,height=${block.height},local height=${pe.getCurrentHeight}"))
+            recvedEndorse += endorser.toString -> endors
+            CheckAndFinishHandler
+          } else {
+            RepLogger.trace(RepLogger.Consensus_Logger, this.getLogMsgPrefix(s"collectioner recv endorsement result,is error,height=${block.height},local height=${pe.getCurrentHeight}"))
+          }
         }else{
           RepLogger.trace(RepLogger.Consensus_Logger, this.getLogMsgPrefix( s"collectioner back out endorsement result,local height=${pe.getCurrentHeight}"))
         }

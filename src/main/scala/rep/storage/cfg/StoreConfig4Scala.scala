@@ -21,11 +21,11 @@ import java.io.File
 import rep.storage.util.pathUtil
 
 object StoreConfig4Scala {
-  private val dbpath="/repchaindata/data/leveldbdata"
-  private val blockpath="/repchaindata/data/blockdata"
-  private val filemax=200000000
-  
-  /**
+	private val dbpath="/repchaindata/data/leveldbdata"
+	private val blockpath="/repchaindata/data/blockdata"
+	private val filemax=200000000
+
+	/**
 	 * @author jiangbuyun
 	 * @version	1.0
 	 * @since	2019-05-11
@@ -36,7 +36,7 @@ object StoreConfig4Scala {
 	def  getDbPath:String={
 		if(SystemProfile.getDBPath == "") dbpath else SystemProfile.getDBPath
 	}
-	
+
 	/**
 	 * @author jiangbuyun
 	 * @version	1.0
@@ -46,12 +46,12 @@ object StoreConfig4Scala {
 	 * @return	String 返回数据库的存储路径
 	 * */
 	def getDbPath(SystemName:String):String={
-	  if(SystemProfile.getDBPath == "")
-	    dbpath + File.separator + SystemName
-	  else
-	    SystemProfile.getDBPath + File.separator + SystemName
+		if(SystemProfile.getDBPath == "")
+			dbpath + File.separator + SystemName
+		else
+			SystemProfile.getDBPath + File.separator + SystemName
 	}
-	
+
 	/**
 	 * @author jiangbuyun
 	 * @version	1.0
@@ -61,12 +61,12 @@ object StoreConfig4Scala {
 	 * @return	String 返回区块的存储路径
 	 * */
 	def  getBlockPath:String={
-	  if(SystemProfile.getBlockPath == "")
-	    blockpath
-	  else
-	    SystemProfile.getBlockPath
+		if(SystemProfile.getBlockPath == "")
+			blockpath
+		else
+			SystemProfile.getBlockPath
 	}
-	
+
 	/**
 	 * @author jiangbuyun
 	 * @version	1.0
@@ -76,16 +76,16 @@ object StoreConfig4Scala {
 	 * @return	String 返回区块的存储路径
 	 * */
 	def getBlockPath(SystemName:String):String={
-	  if(SystemProfile.getBlockPath == "")
-	    blockpath + File.separator + SystemName
-	  else
-	    SystemProfile.getBlockPath + File.separator + SystemName
+		if(SystemProfile.getBlockPath == "")
+			blockpath + File.separator + SystemName
+		else
+			SystemProfile.getBlockPath + File.separator + SystemName
 	}
-	
+
 	def getFileMax:Long={
-	  SystemProfile.getFileMax
+		SystemProfile.getFileMax
 	}
-	
+
 	def getFreeDiskSpace:Long={
 		val bpath = this.getBlockPath
 		try {
@@ -93,7 +93,7 @@ object StoreConfig4Scala {
 				pathUtil.MkdirAll(bpath)
 			}
 		} catch{
-		  case e:Exception => e.printStackTrace()
+			case e:Exception => e.printStackTrace()
 		}
 		val f = new File(bpath)
 		f.getFreeSpace()

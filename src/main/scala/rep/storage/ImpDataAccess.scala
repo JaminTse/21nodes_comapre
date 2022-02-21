@@ -69,7 +69,7 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
     val chaininfo = this.getBlockChainInfo()
     val mh = chaininfo.height
     var h: Long = 2
-    var start : Long = System.currentTimeMillis()
+    var start: Long = System.currentTimeMillis()
     while (h <= mh) {
       val hidx = this.getBlockIdxByHeight(h)
       bheight4bidx += h -> hidx
@@ -77,14 +77,14 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
       ts.foreach(f => {
         txid4bheight += f -> h
       })
-      h += 1 
-      if(h % 1000 == 0){
+      h += 1
+      if (h % 1000 == 0) {
         var end1 = System.currentTimeMillis()
-        println(h+" load time ="+(end1 - start)/1000+"s")
+        println(h + " load time =" + (end1 - start) / 1000 + "s")
       }
     }
     var end = System.currentTimeMillis()
-    println(s"load finish,h=${h},mh=${mh} time ="+(end - start)/1000+"s")
+    println(s"load finish,h=${h},mh=${mh} time =" + (end - start) / 1000 + "s")
     b
   }
 
@@ -100,11 +100,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	根据block的base64 hash值获取block
-   * @param	base64 String block的hash64值
-   * @return	返回block的字节数组，如果没有找到，返回null
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 根据block的base64 hash值获取block
+   * @param base64 String block的hash64值
+   * @return 返回block的字节数组，如果没有找到，返回null
    */
   override def getBlockByBase64Hash(base64: String): Array[Byte] = {
     var rb: Array[Byte] = null
@@ -128,11 +128,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	根据block的hash值获取block
-   * @param	bh String block的hash值
-   * @return	返回block的字节数组，如果没有找到，返回null
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 根据block的hash值获取block
+   * @param bh String block的hash值
+   * @return 返回block的字节数组，如果没有找到，返回null
    */
   override def getBlockByHash(bh: String): Array[Byte] = {
     var rb: Array[Byte] = null
@@ -163,11 +163,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	根据block的hash值获取block
-   * @param	bh String block的hash值
-   * @return	返回block的字节数组，如果没有找到，返回null
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 根据block的hash值获取block
+   * @param bh String block的hash值
+   * @return 返回block的字节数组，如果没有找到，返回null
    */
   private def getBlockIdxByHash(bh: String): blockindex = {
     var rb: blockindex = null
@@ -182,11 +182,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	根据高度获取Block的index
-   * @param	h Long block的高度值
-   * @return	返回blockindex，如果没有找到，返回null
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 根据高度获取Block的index
+   * @param h Long block的高度值
+   * @return 返回blockindex，如果没有找到，返回null
    */
   //private
   def getBlockIdxByHeight(h: Long): blockindex = {
@@ -228,11 +228,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	根据交易id获取这个交易隶属的block
-   * @param	bh String 交易的id
-   * @return	返回Block字节数组，如果没有找到，返回null
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 根据交易id获取这个交易隶属的block
+   * @param bh String 交易的id
+   * @return 返回Block字节数组，如果没有找到，返回null
    */
   override def getBlockByTxId(bh: String): Array[Byte] = {
     var rb: Array[Byte] = null
@@ -258,11 +258,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	1.0
-   * @since	2019-06-12
-   * @category	根据交易id检查交易是否存在
-   * @param	txid String 交易的id
-   * @return	返回true表示存在；如果没有找到，返回false
+   * @version 1.0
+   * @since 2019-06-12
+   * @category 根据交易id检查交易是否存在
+   * @param txid String 交易的id
+   * @return 返回true表示存在；如果没有找到，返回false
    */
   def isExistTrans4Txid(txid: String): Boolean = {
     var b = false
@@ -277,11 +277,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	1.0
-   * @since	2019-04-28
-   * @category	根据交易id获取这个交易隶属的block
-   * @param	bh String 交易的id
-   * @return	返回Block对象，如果没有找到，返回null
+   * @version 1.0
+   * @since 2019-04-28
+   * @category 根据交易id获取这个交易隶属的block
+   * @param bh String 交易的id
+   * @return 返回Block对象，如果没有找到，返回null
    */
   def getBlock4ObjectByTxId(bh: String): Block = {
     val bb = getBlockByTxId(bh)
@@ -294,11 +294,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	1.0
-   * @since	2019-04-28
-   * @category	根据交易Id值获取指定交易
-   * @param	txid String 交易的Id值
-   * @return	返回Transaction对象，如果没有找到，返回None
+   * @version 1.0
+   * @since 2019-04-28
+   * @category 根据交易Id值获取指定交易
+   * @param txid String 交易的Id值
+   * @return 返回Transaction对象，如果没有找到，返回None
    */
   def getTransDataByTxId(txid: String): Option[Transaction] = {
     val b = getBlock4ObjectByTxId(txid)
@@ -311,11 +311,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	1.0
-   * @since	2019-04-28
-   * @category	根据chaincodeid获取指定交易
-   * @param	cid String 链码id
-   * @return	返回Transaction对象，如果没有找到，返回None
+   * @version 1.0
+   * @since 2019-04-28
+   * @category 根据chaincodeid获取指定交易
+   * @param cid String 链码id
+   * @return 返回Transaction对象，如果没有找到，返回None
    */
   def getTransOfContractFromChaincodeId(cid: String): Option[Transaction] = {
     val txid = Get(cid)
@@ -328,11 +328,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	根据链的高度来获取等于这个高度值的block
-   * @param	h Long block的高度值
-   * @return	返回Block字节数组，如果没有找到，返回null
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 根据链的高度来获取等于这个高度值的block
+   * @param h Long block的高度值
+   * @return 返回Block字节数组，如果没有找到，返回null
    */
   override def getBlockByHeight(h: Long): Array[Byte] = {
     var rb: Array[Byte] = null
@@ -349,13 +349,13 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	从某个高度开始（包含这个高度）的所有块取出来，h：开始的高度，h 必须大于0，高度是从1开始
-   * limits 返回块的数量，默认值为0，如果大于0，返回指定数量的块，如果块数小于该值返回实际数量
-   * 默认最多1000条
-   * @param	h Int block的高度值，limits 返回记录的条数
-   * @return	返回指定长度的Block数组，如果没有找到，返回长度=0的数组
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 从某个高度开始（包含这个高度）的所有块取出来，h：开始的高度，h 必须大于0，高度是从1开始
+   *           limits 返回块的数量，默认值为0，如果大于0，返回指定数量的块，如果块数小于该值返回实际数量
+   *           默认最多1000条
+   * @param h Int block的高度值，limits 返回记录的条数
+   * @return 返回指定长度的Block数组，如果没有找到，返回长度=0的数组
    */
   override def getBlocksFromHeight(h: Int, limits: Int): Array[Array[Byte]] = {
     var tlimits = limits
@@ -384,13 +384,13 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	从某个高度开始（包含这个高度）的所有块取出来，h：开始的高度，h 必须大于0，高度是从1开始
-   * limits 返回块的数量，默认值为0，如果大于0，返回指定数量的块，如果块数小于该值返回实际数量
-   * 默认最多1000条
-   * @param	h Int block的高度值
-   * @return	返回最多1000条的Block数组，如果没有找到，返回长度=0的数组
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 从某个高度开始（包含这个高度）的所有块取出来，h：开始的高度，h 必须大于0，高度是从1开始
+   *           limits 返回块的数量，默认值为0，如果大于0，返回指定数量的块，如果块数小于该值返回实际数量
+   *           默认最多1000条
+   * @param h Int block的高度值
+   * @return 返回最多1000条的Block数组，如果没有找到，返回长度=0的数组
    */
   override def getBlocksFromHeight(h: Int): Array[Array[Byte]] = {
     var rb: Array[Array[Byte]] = getBlocksFromHeight(h, 0)
@@ -399,13 +399,13 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	从某个高度开始（包含这个高度）的所有块取出来，h：开始的高度，h 必须大于0，高度是从1开始
-   * limits 返回块的数量，默认值为0，如果大于0，返回指定数量的块，如果块数小于该值返回实际数量
-   * 默认最多1000条
-   * @param	h Int block的高度值，limits 返回记录的条数
-   * @return	返回指定长度的Block数组，如果没有找到，返回长度=0的数组
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 从某个高度开始（包含这个高度）的所有块取出来，h：开始的高度，h 必须大于0，高度是从1开始
+   *           limits 返回块的数量，默认值为0，如果大于0，返回指定数量的块，如果块数小于该值返回实际数量
+   *           默认最多1000条
+   * @param h Int block的高度值，limits 返回记录的条数
+   * @return 返回指定长度的Block数组，如果没有找到，返回长度=0的数组
    */
   override def getBlocks4ObjectFromHeight(h: Int, limits: Int): Array[Block] = {
     var rbo: Array[Block] = null
@@ -423,13 +423,13 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	从某个高度开始（包含这个高度）的所有块取出来，h：开始的高度，h 必须大于0，高度是从1开始
-   * limits 返回块的数量，默认值为0，如果大于0，返回指定数量的块，如果块数小于该值返回实际数量
-   * 默认最多1000条
-   * @param	h Int block的高度值
-   * @return	返回最多1000条的Block数组，如果没有找到，返回长度=0的数组
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 从某个高度开始（包含这个高度）的所有块取出来，h：开始的高度，h 必须大于0，高度是从1开始
+   *           limits 返回块的数量，默认值为0，如果大于0，返回指定数量的块，如果块数小于该值返回实际数量
+   *           默认最多1000条
+   * @param h Int block的高度值
+   * @return 返回最多1000条的Block数组，如果没有找到，返回长度=0的数组
    */
   override def getBlocks4ObjectFromHeight(h: Int): Array[Block] = {
     var rbo: Array[Block] = null
@@ -439,11 +439,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	根据链的高度来获取等于这个高度值的block
-   * @param	h Long block的高度值
-   * @return	返回Block字节数组，如果没有找到，返回null
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 根据链的高度来获取等于这个高度值的block
+   * @param h Long block的高度值
+   * @return 返回Block字节数组，如果没有找到，返回null
    */
   override def getBlock4ObjectByHeight(h: Long): Block = {
     var rb: Array[Byte] = this.getBlockByHeight(h)
@@ -456,11 +456,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2019-09-11
-   * @category	根据交易ID获取交易入块时间
-   * @param	txid 交易id
-   * @return	返回出块时间
+   * @version 0.7
+   * @since 2019-09-11
+   * @category 根据交易ID获取交易入块时间
+   * @param txid 交易id
+   * @return 返回出块时间
    */
   override def getBlockTimeOfTxid(txid: String): String = {
     //SerializeUtils.toJson(this.getBlockTime4Block(this.getBlock4ObjectByTxId(txid)))
@@ -469,11 +469,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2019-09-11
-   * @category	根据块的高度获取交易入块时间
-   * @param	h 块高度
-   * @return	返回出块时间
+   * @version 0.7
+   * @since 2019-09-11
+   * @category 根据块的高度获取交易入块时间
+   * @param h 块高度
+   * @return 返回出块时间
    */
   def getBlockTimeOfHeight(h: Long): String = {
     SerializeUtils.toJson(this.getBlockTime4BlockByHeight(h))
@@ -534,11 +534,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	返回当前区块链的chaininfo
-   * @param	无
-   * @return	返回链码信息 BlockchainInfo
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 返回当前区块链的chaininfo
+   * @param 无
+   * @return 返回链码信息 BlockchainInfo
    */
   override def getBlockChainInfo(): BlockchainInfo = {
     /*var rbc = new BlockchainInfo()
@@ -578,11 +578,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	判断给定的新块是否是最后一个区块
-   * @param	newblock Block 待判断的块,lastblock Block 已知的最后区块
-   * @return	如果是最后的区块，返回true；否则，返回false
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 判断给定的新块是否是最后一个区块
+   * @param newblock Block 待判断的块,lastblock Block 已知的最后区块
+   * @return 如果是最后的区块，返回true；否则，返回false
    */
   private def isLastBlock(newblock: Block, lastblock: blockindex): Boolean = {
     var b: Boolean = false
@@ -608,11 +608,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	同时写入多个区块到系统
-   * @param	blocks Array[Block] 待写入系统的区块数组
-   * @return	返回成功写入的区块的数量
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 同时写入多个区块到系统
+   * @param blocks Array[Block] 待写入系统的区块数组
+   * @return 返回成功写入的区块的数量
    */
   override def restoreBlocks(blocks: Array[Block]): Int = {
     var count = 0
@@ -637,11 +637,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	根据交易id获取chaincode id
-   * @param	block Block 待写入的区块,txid String 待查询的交易id
-   * @return	如果成功返回chaincode id，否则返回空字符串
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 根据交易id获取chaincode id
+   * @param block Block 待写入的区块,txid String 待查询的交易id
+   * @return 如果成功返回chaincode id，否则返回空字符串
    */
   private def getTxidFormBlock(block: Block, txid: String): String = {
     var rel = ""
@@ -724,11 +724,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	写入单个区块到系统
-   * @param	block  待写入系统的区块
-   * @return	如果成功返回true，否则返回false
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 写入单个区块到系统
+   * @param block 待写入系统的区块
+   * @return 如果成功返回true，否则返回false
    */
   override def restoreBlock(block: Block): (Boolean, Long, Long, String, String, String) = {
     if (block == null) return (false, 0l, 0l, "", "", "")
@@ -786,11 +786,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	内部函数，完成区块写入的所有的工作，包含索引的生成，区块字节写入到文件，以及Merkle的生成
-   * @param	_block Array[Block] 待写入系统的区块
-   * @return	成功返回true，否则false
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 内部函数，完成区块写入的所有的工作，包含索引的生成，区块字节写入到文件，以及Merkle的生成
+   * @param _block Array[Block] 待写入系统的区块
+   * @return 成功返回true，否则false
    */
   private def commitAndAddBlock(block: Block, oldh: Long, oldno: Int, oldtxnumber: Long): Boolean = {
     var b: Boolean = false
@@ -873,11 +873,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	内部函数，待写入区块的hash值验证
-   * @param	block Block 待写入的区块,blockhsah Array[Byte] 区块的hash值
-   * @return	成功返回true，否则false
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 内部函数，待写入区块的hash值验证
+   * @param block Block 待写入的区块,blockhsah Array[Byte] 区块的hash值
+   * @return 成功返回true，否则false
    */
   /*private def commitAndAddBlock(block: Block, blockhsah: Array[Byte]): Boolean = {
     var b: Boolean = false
@@ -896,11 +896,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	获取链码的高度
-   * @param	无
-   * @return	成功返回当前区块链的高度 Long
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 获取链码的高度
+   * @param 无
+   * @return 成功返回当前区块链的高度 Long
    */
   override def getBlockHeight(): Long = {
     var l: Long = this.toLong(this.Get(IdxPrefix.Height))
@@ -910,11 +910,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	内部函数，设置区块高度
-   * @param	h Long 高度
-   * @return	无
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 内部函数，设置区块高度
+   * @param h Long 高度
+   * @return 无
    */
   private def setBlockHeight(h: Long) = {
     this.Put(IdxPrefix.Height, String.valueOf(h).getBytes())
@@ -922,11 +922,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	获取系统交易的数量
-   * @param	无
-   * @return	返回系统当前的交易数量
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 获取系统交易的数量
+   * @param 无
+   * @return 返回系统当前的交易数量
    */
   override def getBlockAllTxNumber(): Long = {
     var l: Long = this.toLong(this.Get(IdxPrefix.TotalAllTxNumber))
@@ -936,11 +936,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	内部函数，设置系统当前的交易总量，建立交易索引用
-   * @param	num Long 交易数量
-   * @return	无
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 内部函数，设置系统当前的交易总量，建立交易索引用
+   * @param num Long 交易数量
+   * @return 无
    */
   private def setBlockAllTxNumber(num: Long) = {
     this.Put(IdxPrefix.TotalAllTxNumber, String.valueOf(num).getBytes())
@@ -948,11 +948,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	获取当前存储区块字节的文件编号
-   * @param	无
-   * @return	返回文件编号
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 获取当前存储区块字节的文件编号
+   * @param 无
+   * @return 返回文件编号
    */
   override def getMaxFileNo(): Int = {
     var l: Int = this.toInt(this.Get(IdxPrefix.MaxFileNo))
@@ -962,11 +962,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	内部函数，设置系统最大的存储文件的编号
-   * @param	no Int 最大的区块文件编号
-   * @return	无
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 内部函数，设置系统最大的存储文件的编号
+   * @param no Int 最大的区块文件编号
+   * @return 无
    */
   private def setMaxFileNo(no: Int) = {
     this.Put(IdxPrefix.MaxFileNo, String.valueOf(no).getBytes)
@@ -987,11 +987,11 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
   ////////////////////以下是用来存储文件的////////////////////////////////////
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	内部函数，读区块文件中的指定区块信息
-   * @param	fileno Long 文件编号,startpos Long 区块信息存储的起始位置,length Int 读取数据的长度
-   * @return	返回读取的区块字节数组
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 内部函数，读区块文件中的指定区块信息
+   * @param fileno Long 文件编号,startpos Long 区块信息存储的起始位置,length Int 读取数据的长度
+   * @return 返回读取的区块字节数组
    */
   private def readBlock(fileno: Long, startpos: Long, length: Int): Array[Byte] = {
     val bs = filemgr.readBlock(fileno, startpos, length)
@@ -1000,20 +1000,23 @@ class ImpDataAccess private (SystemName: String) extends IDataAccess(SystemName)
 
   /**
    * @author jiangbuyun
-   * @version	0.7
-   * @since	2017-09-28
-   * @category	内部函数，写区块字节数组到指定文件的指定位置
-   * @param	fileno Long 文件编号,startpos Long 区块信息存储的起始位置,bb Array[Byte] 区块字节数组
-   * @return	如果写入成功返回true，否则false
+   * @version 0.7
+   * @since 2017-09-28
+   * @category 内部函数，写区块字节数组到指定文件的指定位置
+   * @param fileno Long 文件编号,startpos Long 区块信息存储的起始位置,bb Array[Byte] 区块字节数组
+   * @return 如果写入成功返回true，否则false
    */
   private def writeBlock(fileno: Long, startpos: Long, bb: Array[Byte]): Boolean = {
     val b = filemgr.writeBlock(fileno, startpos, bb)
     b
   }
+
   /////////////////end////////////////////////////////////////////////////
 
+  def getInvalidTxid(key: String): Array[Byte] = {
+    this.Get(key)
+  }
 }
-
 ////////////////以下半生对象用来做存储实例的管理，相当于存储管理的类工厂，每一个系统只能产生一个实例来进行操作///////////////
 /**
  * @author jiangbuyun

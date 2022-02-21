@@ -96,7 +96,7 @@ object SignTool {
   //根据CertId实现验签
   def verify(signature: Array[Byte], message: Array[Byte], certinfo: CertId, sysName: String): Boolean = {
     val k = certinfo.creditCode + "." + certinfo.certName
-    var pk = getVerifyCert(k, sysName)
+    val pk = getVerifyCert(k, sysName)
     this.signer.verify(signature, message, pk)
   }
 
@@ -174,7 +174,7 @@ object SignTool {
       })
     r
   }
-  
+
   /*def getCertByPem(pemcert: String): Certificate = {
     val cf = CertificateFactory.getInstance("X.509")
     val cert = cf.generateCertificate(
@@ -188,5 +188,5 @@ object SignTool {
     val fileInputStream = new FileInputStream(path)
     certF.generateCertificate(fileInputStream)
   }*/
-  
+
 }

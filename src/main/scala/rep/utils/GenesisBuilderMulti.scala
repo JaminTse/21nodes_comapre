@@ -30,10 +30,10 @@ import scala.collection.mutable
 
 
 /**
-  * 将整个jks下所有node的账户都注册上去（遍历node的jks），并为账户赋初值，证书暂时没有注册
-  *
-  * @author zyf
-  */
+ * 将整个jks下所有node的账户都注册上去（遍历node的jks），并为账户赋初值，证书暂时没有注册
+ *
+ * @author zyf
+ */
 object GenesisBuilderMulti {
 
   implicit val serialization = jackson.Serialization // or native.Serialization
@@ -96,10 +96,10 @@ object GenesisBuilderMulti {
   }
 
   /**
-    * 将jks目录下的所有节点账户账户数组中
-    *
-    * @return
-    */
+   * 将jks目录下的所有节点账户账户数组中
+   *
+   * @return
+   */
   // TODO 排个序，只注册部分
   def fillSigners(): Array[Signer] = {
     val fileDir = new File("jks")

@@ -139,7 +139,7 @@ class MemberListener(MoudleName: String) extends ModuleBase(MoudleName) with Clu
           RepLogger.info(RepLogger.System_Logger, this.getLogMsgPrefix(s"Recollection:  nodes not stable,node name=${node._2._2}"))
         }
       })
-      
+
       if (preloadNodesMap.size > 0) {
         pe.getNodeMgr.getStableNodes.foreach(node => {
           if (preloadNodesMap.contains(node)) {
@@ -152,7 +152,7 @@ class MemberListener(MoudleName: String) extends ModuleBase(MoudleName) with Clu
       if(pe.getSysTag == "720123045610369920.node6"){
         print("")
       }
-      
+
       if (!this.isStartSynch) {
         if (pe.getNodeMgr.getStableNodes.size >= SystemProfile.getVoteNoteMin) {
           //组网成功之后开始系统同步

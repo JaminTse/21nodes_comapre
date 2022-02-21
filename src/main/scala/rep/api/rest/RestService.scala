@@ -16,12 +16,13 @@
 
 package rep.api.rest
 
-import scala.concurrent.{ ExecutionContext, Future }
-import akka.actor.{ ActorRef, ActorSelection }
+import scala.concurrent.{ExecutionContext, Future}
+import akka.actor.{ActorRef, ActorSelection}
 import akka.util.Timeout
 import akka.http.scaladsl.model.Uri.Path.Segment
 import akka.http.scaladsl.server.Directives
 import io.swagger.annotations._
+
 import javax.ws.rs.Path
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server._
@@ -32,15 +33,15 @@ import rep.sc.Sandbox._
 import rep.sc.Shim._
 import de.heikoseeberger.akkahttpjson4s.Json4sSupport
 import rep.protos.peer._
-import rep.api.rest.RestActor._
+import rep.api.rest.RestActor.{TranInfoAndHeightId, _}
 import spray.json.DefaultJsonProtocol._
-import org.json4s.{ DefaultFormats, Formats, jackson }
+import org.json4s.{DefaultFormats, Formats, jackson}
 import akka.http.scaladsl.server.Directives
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import spray.json._
 import akka.http.scaladsl.marshallers.xml.ScalaXmlSupport
-import akka.http.scaladsl.model.{ ContentTypes, HttpCharsets, MediaTypes }
-import akka.http.scaladsl.unmarshalling.{ FromEntityUnmarshaller, Unmarshaller }
+import akka.http.scaladsl.model.{ContentTypes, HttpCharsets, MediaTypes}
+import akka.http.scaladsl.unmarshalling.{FromEntityUnmarshaller, Unmarshaller}
 
 import scala.xml.NodeSeq
 import rep.log.RepLogger
@@ -92,8 +93,8 @@ class ChainService(ra: ActorRef)(implicit executionContext: ExecutionContext)
         }
       }
     }
-  
-  
+
+
   @Path("/loadBlockInfoToCache")
   @ApiOperation(value = "初始化装载区块索引到缓存", notes = "", nickname = "loadBlockInfoToCache", httpMethod = "GET")
   @ApiResponses(Array(
@@ -107,7 +108,7 @@ class ChainService(ra: ActorRef)(implicit executionContext: ExecutionContext)
         }
       }
     }
-  
+
   @Path("/IsLoadBlockInfoToCache")
   @ApiOperation(value = "是否完成始化装载区块索引到缓存", notes = "", nickname = "IsLoadBlockInfoToCache", httpMethod = "GET")
   @ApiResponses(Array(
@@ -121,7 +122,7 @@ class ChainService(ra: ActorRef)(implicit executionContext: ExecutionContext)
         }
       }
     }
-  
+
 
   @Path("/getcachetransnumber")
   @ApiOperation(value = "返回系统缓存交易数量", notes = "", nickname = "getCacheTransNumber", httpMethod = "GET")
@@ -280,9 +281,9 @@ class BlockService(ra: ActorRef)(implicit executionContext: ExecutionContext)
         //complete { (ra ? BlockHeight(blockHeight.toInt)).mapTo[QueryResult] }
       }
     }
-  
-  
-  
+
+
+
   @Path("/blocktimeoftran")
   @ApiOperation(value = "返回指定交易的入块时间", notes = "", nickname = "getBlockTimeOfTransaction", httpMethod = "POST")
   @ApiImplicitParams(Array(
@@ -363,7 +364,7 @@ class TransactionService(ra: ActorRef)(implicit executionContext: ExecutionConte
     //只能处理application/json
     unmarshaller[CSpec].forContentTypes(MediaTypes.`application/json`))
 
-  val route = getTransaction ~ getTransactionStream ~ postSignTransaction ~ postTransaction ~ postSignTransactionStream
+  val route = getTransaction ~ getTransactionStream ~ postSignTransaction ~ postTransaction ~ postSignTransactionStream ~ getTranInfoAndBlockHeightByTxid
 
   @Path("/{transactionId}")
   @ApiOperation(value = "返回指定id的交易", notes = "", nickname = "getTransaction", httpMethod = "GET")
@@ -458,6 +459,22 @@ class TransactionService(ra: ActorRef)(implicit executionContext: ExecutionConte
         import akka.http.scaladsl.marshallers.xml.ScalaXmlSupport._
         entity(as[CSpec]) { request =>
           complete { (ra ? request).mapTo[PostResult] }
+        }
+      }
+    }
+
+  @Path("/getTranInfoAndBlockHeightByTxid/{transactionId}")
+  @ApiOperation(value = "返回指定id的交易信息及所在区块高度", notes = "", nickname = "tranInfoAndHeightOfTranId", httpMethod = "GET")
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(name = "transactionId", value = "交易id", required = false, dataType = "string", paramType = "path")))
+  @ApiResponses(Array(
+    new ApiResponse(code = 200, message = "返回指定id的交易信息及所在区块高度", response = classOf[QueryResult])))
+  def getTranInfoAndBlockHeightByTxid =
+    path("transaction"/"getTranInfoAndBlockHeightByTxid"/Segment) { transactionId =>
+      get {
+        extractClientIP { ip =>
+          RepLogger.debug(RepLogger.APIAccess_Logger, s"remoteAddr=${ip} get transactionInfo and blockHeight for txid,txid=${transactionId}")
+          complete((ra ? TranInfoAndHeightId(transactionId)).mapTo[QueryResult])
         }
       }
     }

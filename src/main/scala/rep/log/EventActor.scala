@@ -44,38 +44,38 @@ object EventActor {
  */
 class EventActor extends ActorPublisher[Event] {
   import scala.concurrent.duration._
-  
+
   val cluster = Cluster(context.system)
   var nodes = Set.empty[Address]
   var buffer = Vector.empty[Event]
 
   /** 启动,订阅集群入网、离网事件,订阅Topic事件
-   * 
+   *
    */
   override def preStart(): Unit ={
     cluster.subscribe(self, classOf[MemberEvent])
     val mediator = DistributedPubSub(context.system).mediator
     //发送订阅Event
-    mediator ! Subscribe(Topic.Event, self)   
+    mediator ! Subscribe(Topic.Event, self)
     //发送当前出块人
     val pe = PeerExtension(context.system)
-    self ! new Event( pe.getBlocker.blocker, "", Event.Action.CANDIDATOR) 
+    self ! new Event( pe.getBlocker.blocker, "", Event.Action.CANDIDATOR)
     val ref = context.actorSelection("/user/modulemanager/memberlistener")
     if(ref != null) ref ! cluster.state
   }
 
   /** 停止处理，取消订阅
-   * 
+   *
    */
   override def postStop(): Unit =
     cluster unsubscribe self
-    
+
   /** 接收Event处理，支持所谓“背压”方式，即根据web端消费能力push
-   *  
+   *
    */
   override def receive: Receive = {
     //Topic事件
-    case evt:Event=> 
+    case evt:Event=>
       //当浏览器关掉，自杀
       if(this.isCanceled){
         self ! PoisonPill
@@ -90,7 +90,7 @@ class EventActor extends ActorPublisher[Event] {
             buffer = keep
             use foreach onNext
           }
-        }  
+        }
       }
     //集群事件
     /*case state: CurrentClusterState =>

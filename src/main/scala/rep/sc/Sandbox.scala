@@ -71,8 +71,8 @@ object Sandbox {
    *  @param cause 导致异常的原因
    */
   case class SandboxException(
-    private val message: String    = "",
-    private val cause:   Throwable = None.orNull)
+                               private val message: String    = "",
+                               private val cause:   Throwable = None.orNull)
     extends Exception(message, cause)
 }
 

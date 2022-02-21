@@ -32,11 +32,11 @@ class parallelPutProofTPL extends IContract{
   }
 
   /**
-    * 存多参数
-    * @param ctx
-    * @param data
-    * @return
-    */
+   * 存多参数
+   * @param ctx
+   * @param data
+   * @return
+   */
   def putProof(ctx: ContractContext, data: proofDataMap): ActionResult = {
     data.foreach(
       entry => {
@@ -48,11 +48,11 @@ class parallelPutProofTPL extends IContract{
   }
 
   /**
-    * 存单参数
-    * @param ctx
-    * @param data
-    * @return
-    */
+   * 存单参数
+   * @param ctx
+   * @param data
+   * @return
+   */
   def putProof(ctx: ContractContext, data: proofDataSingle): ActionResult = {
     ctx.api.setVal(ctx.t.id + split + data.key, data.value)
     print("putProof:"+ data.key + ":" + data.value)

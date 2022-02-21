@@ -24,7 +24,7 @@ import rep.protos.peer.Transaction
 
 
 object IdTool {
-  
+
   def getUUID: String = {
     val uuid = TimeUuid()
     uuid.toString
@@ -33,8 +33,8 @@ object IdTool {
   def getRandomUUID: String = {
     UUID.randomUUID().toString
   }
-  
-  
+
+
   /** 从部署合约的交易，获得其部署的合约的链码id
    *  @param t 交易对象
    *  @return 链码id
@@ -42,23 +42,23 @@ object IdTool {
   def getTXCId(t: Transaction): String = {
     val t_cid = t.cid.get
     getCid(t_cid)
-  } 
-  
+  }
+
   def getCid(chaincodeid:ChaincodeId):String={
     chaincodeid.chaincodeName+"_"+chaincodeid.version.toString()
   }
-  
+
   def getSigner4String(certid:CertId):String={
-   certid.certName + "." + certid.creditCode
+    certid.certName + "." + certid.creditCode
   }
-  
+
   def getCertIdFromName(name:String):CertId={
     if(name != null && name.indexOf(".")> 0){
-        CertId(name.substring(0,name.indexOf(".")),
-                name.substring(name.indexOf(".")+1,name.length()))
+      CertId(name.substring(0,name.indexOf(".")),
+        name.substring(name.indexOf(".")+1,name.length()))
     }else{
       null
     }
   }
-  
+
 }

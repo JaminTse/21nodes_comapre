@@ -27,7 +27,7 @@ import java.security.cert.{ Certificate, CertificateFactory }
  */
 
 trait ISigner {
-  def sign(privateKey: PrivateKey, message: Array[Byte]): Array[Byte] 
+  def sign(privateKey: PrivateKey, message: Array[Byte]): Array[Byte]
   def verify(signature: Array[Byte], message: Array[Byte], publicKey: PublicKey): Boolean
   def CertificateIsValid(date:java.util.Date,  cert:Certificate):Boolean
 }

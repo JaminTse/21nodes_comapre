@@ -65,12 +65,12 @@ class DispatchOfRecvEndorsement(moduleName: String) extends ModuleBase(moduleNam
     }
   }
 
-  
+
 
   override def receive = {
     case EndorsementInfo(block, blocker) =>
       createRouter
-      router.route(EndorsementInfo(block, blocker), sender)  
+      router.route(EndorsementInfo(block, blocker), sender)
     case _ => //ignore
   }
 }

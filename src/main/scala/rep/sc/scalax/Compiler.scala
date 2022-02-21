@@ -60,19 +60,19 @@ object Compiler{
     val ptn = """case\s+class\s+(\S+)\s*\(""".r
     var rc = code
     for(ptn(cn) <- ptn.findAllIn(code)){
-       val pcn = pre+cn
-       //替换定义
-       rc = rc.replaceFirst("""case\s+class\s+"""+cn+"""\s*\(""".r,  "case class "+pcn+"(")
-       //替换json造型
-       rc = rc.replaceAll("""\[\s*"""+cn+"""\s*\]""".r,  "["+pcn+"]")
-       //替换类型声明
-       rc = rc.replaceAll(""":\s*"""+cn+"""""".r,  ":"+pcn)
-       //替换构造实例
-        rc = rc.replaceAll("""=(\s*|\s*new\s*)"""+cn+"""\s*\(""".r,  "= "+pcn+"(")
+      val pcn = pre+cn
+      //替换定义
+      rc = rc.replaceFirst("""case\s+class\s+"""+cn+"""\s*\(""".r,  "case class "+pcn+"(")
+      //替换json造型
+      rc = rc.replaceAll("""\[\s*"""+cn+"""\s*\]""".r,  "["+pcn+"]")
+      //替换类型声明
+      rc = rc.replaceAll(""":\s*"""+cn+"""""".r,  ":"+pcn)
+      //替换构造实例
+      rc = rc.replaceAll("""=(\s*|\s*new\s*)"""+cn+"""\s*\(""".r,  "= "+pcn+"(")
     }
     rc
   }
-  
+
   def prefixCode(code:String, cn:String) :String = {
     prefixCaseClass(prefixClass(code,cn),cn)
   }
@@ -80,15 +80,15 @@ object Compiler{
    * 为class加cid前缀，避免合约间重名,移除package声明,增加classTag声明
    */
   def prefixClass(code:String, cn:String) :String ={
-     //val pattern = """class\s+(S+)\s+extends\s+IContract\s*\{"""
-     //移除package声明——由于reflect不支持
-     var c = code
-     c = c.replaceFirst("""\s*package\s+\S+""", "")
-     //替换类名
-     c = c.replaceFirst("""class\s+(\S+)\s+extends\s+IContract\s*\{""", "class "+cn + " extends IContract{")
-     //增加返回classTag
-     //c +=  "\nscala.reflect.classTag[" + cn  +"].runtimeClass"
-     c
+    //val pattern = """class\s+(S+)\s+extends\s+IContract\s*\{"""
+    //移除package声明——由于reflect不支持
+    var c = code
+    c = c.replaceFirst("""\s*package\s+\S+""", "")
+    //替换类名
+    c = c.replaceFirst("""class\s+(\S+)\s+extends\s+IContract\s*\{""", "class "+cn + " extends IContract{")
+    //增加返回classTag
+    //c +=  "\nscala.reflect.classTag[" + cn  +"].runtimeClass"
+    c
   }
 }
 
@@ -130,7 +130,7 @@ class Compiler(targetDir: Option[File], bDebug:Boolean) {
    */
   def getSourcePath()={
     //工程根路径
-    val path_source_root = "repchain"       
+    val path_source_root = "repchain"
     //获得class路径
     val rpath = getClass.getResource("").getPath
     //获得source路径
@@ -144,9 +144,9 @@ class Compiler(targetDir: Option[File], bDebug:Boolean) {
    *  @param code 代码内容
    */
   def saveCode(fn:String, code:String)={
-    val fout = new FileWriter(path_source+File.separator+fn+".scala") 
+    val fout = new FileWriter(path_source+File.separator+fn+".scala")
     fout.write(code)
-    fout.close()   
+    fout.close()
   }
 
   /**
@@ -162,26 +162,26 @@ class Compiler(targetDir: Option[File], bDebug:Boolean) {
     try{
       cl = Some(Class.forName(className))
     }catch {
-      case e:Throwable =>     
-        cl = findClass(className)          
-    } 
+      case e:Throwable =>
+        cl = findClass(className)
+    }
     if(cl!=None)
-        return cl.get      
+      return cl.get
     //获取替换类名
     val ncode = Compiler.prefixCode(pcode, className)
     if(path_source!=null)
-      saveCode(className,ncode)  
+      saveCode(className,ncode)
     val cls = tb.compile(tb.parse(ncode +"\nscala.reflect.classTag["
       +className
       +"].runtimeClass"))().asInstanceOf[Class[_]]
     classCache(className) = cls
-    cls  
+    cls
   }
 
-/** 尝试加载类定义
- * 	@param className 类名称
- *  @return 类定义
- */
+  /** 尝试加载类定义
+   * 	@param className 类名称
+   *  @return 类定义
+   */
   def findClass(className: String): Option[Class[_]] = {
     synchronized {
       classCache.get(className).orElse {

@@ -25,36 +25,36 @@ import rep.utils.GlobalUtils.EventType
 import rep.app.conf.SystemProfile
 
 /**
-  * Akka组网类
-  *
-  * @author shidianyue
-  * @version 1.0
-  **/
- trait ClusterActor extends  Actor{
+ * Akka组网类
+ *
+ * @author shidianyue
+ * @version 1.0
+ **/
+trait ClusterActor extends  Actor{
   import akka.cluster.pubsub.DistributedPubSub
 
   val mediator = DistributedPubSub(context.system).mediator
 
   /**
-    * 根据全网节点的地址（带IP）判断是否属于同一个System
-    *
-    * @param src
-    * @param tar
-    * @return
-    */
+   * 根据全网节点的地址（带IP）判断是否属于同一个System
+   *
+   * @param src
+   * @param tar
+   * @return
+   */
   def isThisAddr(src: String, tar: String): Boolean = {
     src.startsWith(tar)
   }
 
   /**
-    * 广播Event消息
-    *
-    * @param eventType 发送、接受
-    * @param mediator
-    * @param addr
-    * @param topic
-    * @param action
-    */
+   * 广播Event消息
+   *
+   * @param eventType 发送、接受
+   * @param mediator
+   * @param addr
+   * @param topic
+   * @param action
+   */
   def sendEvent(eventType: Int, mediator: ActorRef, addr: String, topic: String, action: Event.Action): Unit = {
     if(SystemProfile.getRealtimeGraph == 1){
       eventType match {
@@ -71,17 +71,17 @@ import rep.app.conf.SystemProfile
       }
     }
   }
-  
-  
-    /**
-    * 广播SyncEvent消息
-    *
-    * @param eventType 发送、接受
-    * @param mediator
-    * @param fromAddr
-    * @param toAddr
-    * @param action
-    */
+
+
+  /**
+   * 广播SyncEvent消息
+   *
+   * @param eventType 发送、接受
+   * @param mediator
+   * @param fromAddr
+   * @param toAddr
+   * @param action
+   */
   def sendEventSync(eventType: Int, mediator: ActorRef, fromAddr: String, toAddr: String, action: Event.Action): Unit = {
     eventType match {
       case EventType.PUBLISH_INFO =>
@@ -99,23 +99,23 @@ import rep.app.conf.SystemProfile
   }
 
   /**
-    * 获取有完全信息的地址（ip和port）
-    * @param ref
-    * @return
-    */
+   * 获取有完全信息的地址（ip和port）
+   * @param ref
+   * @return
+   */
   def getClusterAddr(ref:ActorRef):String = {
     akka.serialization.Serialization.serializedActorPath(ref)
   }
 
   /**
-    * cluster订阅消息
-    *
-    * @param mediator
-    * @param self
-    * @param addr
-    * @param topic
-    * @param isEvent
-    */
+   * cluster订阅消息
+   *
+   * @param mediator
+   * @param self
+   * @param addr
+   * @param topic
+   * @param isEvent
+   */
   def SubscribeTopic(mediator: ActorRef, self: ActorRef, addr: String, topic: String, isEvent: Boolean) = {
     mediator ! Subscribe(topic, self)
     //广播本次订阅事件
